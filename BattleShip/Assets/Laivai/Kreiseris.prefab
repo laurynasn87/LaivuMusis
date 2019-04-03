@@ -1911,8 +1911,8 @@ GameObject:
   - component: {fileID: 9043201058405249691}
   - component: {fileID: 9065352544742027107}
   m_Layer: 0
-  m_Name: Cruiser
-  m_TagString: Untagged
+  m_Name: Kreiseris
+  m_TagString: Laivai
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

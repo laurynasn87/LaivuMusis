@@ -381,7 +381,7 @@ GameObject:
   - component: {fileID: 8390871733779678574}
   m_Layer: 0
   m_Name: Minininkas
-  m_TagString: Untagged
+  m_TagString: Laivai
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -431,7 +431,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 198635216}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1322069827}
+        m_MethodName: Reset
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &198635216
@@ -2218,10 +2229,10 @@ MonoBehaviour:
   frigata: {fileID: 8791413291257081485, guid: d76ed8a9ee4c4544792eed5737b1255b, type: 3}
   vertical: 1
   Length: 1
-  koordinates: {fileID: 958975963}
   Main: {fileID: 534669902}
   LaivoPavadinimas: 
   Priesininkas: {fileID: 955506471}
+  ZadimoCanvas: {fileID: 525730401}
 --- !u!4 &1322069829
 Transform:
   m_ObjectHideFlags: 0
