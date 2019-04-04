@@ -14,7 +14,7 @@ public class BoardVer1 : MonoBehaviour
     public GameObject BoardUnitPrefab;
     public GameObject mygtukasZaisti;
     //public int numSelectors = 10;
-    public GameObject[,] board = new GameObject[100, 100];
+    public GameObject[,] board;
     public GameObject Sarvuotlaivis;
     public GameObject korvete;
     public GameObject minininkas;
@@ -31,15 +31,11 @@ public class BoardVer1 : MonoBehaviour
     string Counteris = "https://bastioned-public.000webhostapp.com/CountStuff.php?";
     string CounterData = "https://bastioned-public.000webhostapp.com/GetCounterData.php";
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        Main.SetActive(true);
-        Main.transform.position = (new Vector3(Main.transform.position.x - 20, Main.transform.position.y, Main.transform.position.z));
 
-        //Transform mainkamera = Camera.main.transform;
-        //boardd = new board[10];
-        //board = new GameObject[10,10];
+   public void GenerateBoard()
+    {
+        board = null;
+        board = new GameObject[100, 100]; 
         int row = 1;
         int col = 1;
         for (int i = 0; i < 10; i++)
@@ -72,6 +68,18 @@ public class BoardVer1 : MonoBehaviour
             row++;
         }
     }
+    // Start is called before the first frame update
+    void Start()
+    {
+        Main.SetActive(true);
+        Main.transform.position = (new Vector3(Main.transform.position.x - 20, Main.transform.position.y, Main.transform.position.z));
+        GenerateBoard();
+        //Transform mainkamera = Camera.main.transform;
+        //boardd = new board[10];
+        //board = new GameObject[10,10];
+    
+
+    }
 
     // Update is called once per frame
     void Update()
@@ -98,7 +106,7 @@ public class BoardVer1 : MonoBehaviour
 
     }
 
-    GameObject GetObjectByCoordinates(RaycastHit hits)
+  public  GameObject GetObjectByCoordinates(RaycastHit hits)
     {
         GameObject[] objektai;
         GameObject Atsakymas = null;
@@ -169,17 +177,17 @@ public class BoardVer1 : MonoBehaviour
     {
         // Priesininkas.SetActive(true);
 
-        foreach (Laivas Lai in Laivai)
-        {
-            Debug.LogWarning(Lai.pavadinimas);
-            foreach (String index in Lai.Koordinates)
-            {
-                Debug.LogWarning(index);
+     //   foreach (Laivas Lai in Laivai)
+    //    {
+         //   Debug.LogWarning(Lai.pavadinimas);
+         //   foreach (String index in Lai.Koordinates)
+         //   {
+               // Debug.LogWarning(index);
                 // InsertStuff(index);
                 //  Counter(index);
-            }
+          //  }
 
-        }
+    //    }
     }
 
     public void InsertStuff(string koordinates)
@@ -206,5 +214,9 @@ public class BoardVer1 : MonoBehaviour
         WWW www = new WWW(CounterData);
     }
 
+    public GameObject[,] GetBoard()
+    {
+        return board;
+    }
 }
 

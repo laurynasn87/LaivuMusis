@@ -24,7 +24,7 @@ public class BoardUIVer1 : MonoBehaviour
         this.OCCUPIED = false;
         Lenta = GameObject.FindGameObjectWithTag("LentaMano");
         Script = Lenta.GetComponent<BoardVer1>();
-        board2 = Script.board;
+        board2 = Script.GetBoard();
         //lblBoardPosition.text = "B1[00:00]";
         //lblBoardPosition.name = "";
     }
@@ -38,11 +38,11 @@ public class BoardUIVer1 : MonoBehaviour
     {
         List<String> Koordinates = new List<string>();
         if (Script.Length == 0) return;
-
+       if(ArNeraLaivo(gameObject.name, visi))return;
         foreach (GameObject ibjektas in Dabartiniai)
         {
             ibjektas.GetComponent<Renderer>().material.SetColor("_Color", Color.red); // Bug : Kai norimas padet laivas overlapina su padetu, nes kur nori pakeist spalva nera prefabo
-                                                                                      // Possible fix: Jei overlapina neduoti padeti
+            visi.Add(ibjektas.name);                                                                   // Possible fix: Jei overlapina neduoti padeti
             Koordinates.Add(ibjektas.name);
             removetile(ibjektas);
         }
@@ -178,13 +178,15 @@ public class BoardUIVer1 : MonoBehaviour
         if (Script.Length == 0) return;
         int w = board2.GetLength(0); // width
         int h = board2.GetLength(1); // height
-
+     
+        
         for (int x = 0; x < w; x = x + 10)
         {
             for (int y = 0; y < h; y = y + 10)
             {
                 if (board2[x, y] != null)
                     board2[x, y].GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+               // else Debug.LogWarning(Script.board[x,y].name);
 
             }
         }
@@ -261,20 +263,20 @@ public class BoardUIVer1 : MonoBehaviour
     {
         refresh();
         RandomDidesniLaivai(1, Script.frigata, 0, 0, 4);
-        RandomDidesniLaivai(3, Script.korvete, 10, 10, 2);
-        RandomDidesniLaivai(4, Script.Sarvuotlaivis, 15, 15, 1);
+     //   RandomDidesniLaivai(3, Script.korvete, 10, 10, 2);
+       // RandomDidesniLaivai(4, Script.Sarvuotlaivis, 15, 15, 1);
         RandomDidesniLaivai(2, Script.minininkas, 5, 5, 3);
     }
     public bool ArNeraLaivo(String cord, List<string> koordas)
     {
-        //     Debug.LogWarning("atejau  " + BoardVer1.Laivai.Count);
+      
         bool ats = false;
-        //         Debug.LogWarning(index.Koordinates.Count);
+      
 
         foreach (String koord in koordas)
         {
 
-            //  Debug.LogWarning(koord + cord);
+           
             if (koord.Equals(cord)) ats = true;
 
         }
@@ -305,6 +307,28 @@ public class BoardUIVer1 : MonoBehaviour
             }
         }
     }
+    public void PlaceShip(List<String> Koordinates, GameObject Laivas, Quaternion Laipsniai, int paklaidax, int paklaiday)
+    {
+        bool Placed = false;
+        
+        foreach (String cord in Koordinates)
+        {
+
+            GameObject Tile = GetTileByString(cord);
+            if (Tile!=null)
+            {
+                Tile.GetComponent<Renderer>().material.color = Color.red;
+            }
+            if (!Placed)
+            {
+                if (paklaidax != 0)
+                    Instantiate(Laivas, new Vector3(Tile.transform.position.x + paklaidax, 2.85f, Tile.transform.position.z), Laipsniai);
+                else Instantiate(Laivas, new Vector3(Tile.transform.position.x, 2.85f, Tile.transform.position.z + paklaiday), Laipsniai);
+                Placed = true;
+            }
+        }
+
+    }
     void RandomDidesniLaivai(int ilgis, GameObject laivas, int paklaidax, int paklaiday, int kiekis)
     {
         System.Random rnd = new System.Random();
@@ -318,15 +342,15 @@ public class BoardUIVer1 : MonoBehaviour
             int x = rnd.Next(1, 11);
             int y = rnd.Next(1, 11);
             int vertical = rnd.Next(0, 2);
-            //  Debug.LogWarning("Vertical " + vertical);
+     
             if (vertical == 0)
                 while (x > 10 - ilgis)
                     x--;
             else
                 while (y > 10 - ilgis)
                     y--;
-            if (vertical == 0)
-                for (int e = x; e < x + ilgis; e++)
+            if (vertical == 0)                                                   
+                for (int e = x; e < x + ilgis; e++)                         
                 {
                     if (e < 10) xstring = "0" + e;
                     else xstring = e.ToString();
@@ -345,7 +369,7 @@ public class BoardUIVer1 : MonoBehaviour
                     koordin.Add("B1:[" + xstring + "," + ystring + "]");
                     if (visi.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
                 }
-            //   Debug.LogWarning(uzimta);
+       
             if (uzimta)
             {
                 i--;
@@ -353,9 +377,9 @@ public class BoardUIVer1 : MonoBehaviour
             }
             else
             {
-                //  Debug.LogWarning("esi cia");
+                
                 koordin.ForEach(item => visi.Add(item));
-                koordin.ForEach(Debug.LogWarning);
+                koordin.ForEach(item => Debug.LogWarning(item));
                 if (vertical == 0)
                 {
                     LaivoPridejimas(koordin, laivas, Quaternion.Euler(0, 90, 0), paklaidax, 0);
@@ -382,12 +406,10 @@ public class BoardUIVer1 : MonoBehaviour
         tiles = GameObject.FindGameObjectsWithTag("Laivai");
         for (int i = 0; i < tiles.Length; i++)
             GameObject.Destroy(tiles[i]);
-
-        Dabartiniai.Clear();
-        board2 = new GameObject[100, 100];
+        //board2 = new GameObject[100, 100];
+       
         board2 = Script.board;
-
-
+       
     }
     public void Reset()
     {
@@ -407,7 +429,17 @@ public class BoardUIVer1 : MonoBehaviour
          kiekis.text = ("2").ToString(); 
          kiekis = GameObject.FindGameObjectWithTag("Sarvuotlaivis").GetComponent<Text>();
          kiekis.text = ("1").ToString();
+        length = 1;
 
+    }
+    public GameObject GetTileByString(string name)
+    {
+        GameObject[] plteles = GameObject.FindGameObjectsWithTag("board");
+        foreach (GameObject tile in plteles)
+        {
+            if (tile.name.Equals(name)) return tile;
+        }
 
+        return null;
     }
 }
