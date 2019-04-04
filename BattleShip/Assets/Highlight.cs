@@ -10,7 +10,7 @@ public class Highlight : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     public Image img;
     Color oldcollor;
     public bool isOver = false;
-    bool Paspaustas = false;
+ 
     Image yellow;
     public BoardVer1 ver1;
     public void Start()

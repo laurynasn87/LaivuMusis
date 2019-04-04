@@ -63,9 +63,11 @@
     <Compile Include="Assets\Background.cs" />
     <Compile Include="Assets\BoardUIVer1.cs" />
     <Compile Include="Assets\BoardVer1.cs" />
+    <Compile Include="Assets\bullet.cs" />
     <Compile Include="Assets\Highlight.cs" />
     <Compile Include="Assets\Laivas.cs" />
     <Compile Include="Assets\Priesininkas.cs" />
+    <Compile Include="Assets\PriesTile.cs" />
     <Compile Include="Assets\SampleScenes\Menu\Scripts\MenuSceneLoader.cs" />
     <Compile Include="Assets\SampleScenes\Menu\Scripts\PauseMenu.cs" />
     <Compile Include="Assets\SampleScenes\Menu\Scripts\SceneAndURLLoader.cs" />

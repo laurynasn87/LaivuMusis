@@ -263,8 +263,8 @@ public class BoardUIVer1 : MonoBehaviour
     {
         refresh();
         RandomDidesniLaivai(1, Script.frigata, 0, 0, 4);
-     //   RandomDidesniLaivai(3, Script.korvete, 10, 10, 2);
-       // RandomDidesniLaivai(4, Script.Sarvuotlaivis, 15, 15, 1);
+        RandomDidesniLaivai(3, Script.korvete, 10, 10, 2);
+       RandomDidesniLaivai(4, Script.Sarvuotlaivis, 15, 15, 1);
         RandomDidesniLaivai(2, Script.minininkas, 5, 5, 3);
     }
     public bool ArNeraLaivo(String cord, List<string> koordas)
@@ -394,7 +394,7 @@ public class BoardUIVer1 : MonoBehaviour
             koordin.Clear();
         }
         pasibaige(ilgis.ToString());
-        Script.printStuff();
+        
     }
     void refresh()
     {

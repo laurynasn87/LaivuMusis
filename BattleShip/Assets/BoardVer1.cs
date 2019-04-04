@@ -31,13 +31,14 @@ public class BoardVer1 : MonoBehaviour
     string Counteris = "https://bastioned-public.000webhostapp.com/CountStuff.php?";
     string CounterData = "https://bastioned-public.000webhostapp.com/GetCounterData.php";
 
-
-   public void GenerateBoard()
+    bool active = true;
+    public void GenerateBoard()
     {
         board = null;
         board = new GameObject[100, 100]; 
         int row = 1;
         int col = 1;
+       
         for (int i = 0; i < 10; i++)
         {
             for (int j = 0; j < 10; j++)
@@ -84,26 +85,28 @@ public class BoardVer1 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 mouse = Input.mousePosition;
-        Ray castPoint = Camera.main.ScreenPointToRay(mouse);
-        RaycastHit hit;
-        //  if (Physics.Raycast(castPoint, out hit, Mathf.Infinity))
-        //       OnMouseEnter(hit);
-
-        if (Input.GetMouseButtonDown(0))
+        if (active)
         {
+            Vector3 mouse = Input.mousePosition;
+            Ray castPoint = Camera.main.ScreenPointToRay(mouse);
+            RaycastHit hit;
+            //  if (Physics.Raycast(castPoint, out hit, Mathf.Infinity))
+            //       OnMouseEnter(hit);
 
-            if (Physics.Raycast(castPoint, out hit, Mathf.Infinity))
+            if (Input.GetMouseButtonDown(0))
             {
 
+                if (Physics.Raycast(castPoint, out hit, Mathf.Infinity))
+                {
 
-                //    String index = GetObjectByCoordinates(hit).name;
-                //   koordinates.text = indexs(index);
+
+                    //    String index = GetObjectByCoordinates(hit).name;
+                    //   koordinates.text = indexs(index);
+
+                }
 
             }
-
         }
-
     }
 
   public  GameObject GetObjectByCoordinates(RaycastHit hits)
@@ -175,8 +178,13 @@ public class BoardVer1 : MonoBehaviour
     }
     public void printStuff()
     {
-        // Priesininkas.SetActive(true);
-
+        active = false;
+        ZadimoCanvas.gameObject.SetActive(false);
+        Main.transform.position = new Vector3(50, 88, 45);
+        Main.transform.rotation = new Quaternion(90, 0, 0, Main.transform.rotation.w);
+        Main.gameObject.SetActive(false);
+         Priesininkas.SetActive(true);
+        
      //   foreach (Laivas Lai in Laivai)
     //    {
          //   Debug.LogWarning(Lai.pavadinimas);

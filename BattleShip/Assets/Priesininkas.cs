@@ -7,7 +7,12 @@ public class Priesininkas : MonoBehaviour
     // Start is called before the first frame update
     public GameObject[,] board = new GameObject[100, 100];
     public GameObject MainBoard;
-
+    public GameObject PriesininkoKamera;
+    public GameObject prefab;
+    public GameObject bullet;
+    public GameObject explosion;
+    public GameObject faieaa;
+    public bool ejimas = true;
     void Start()
     {
         BoardVer1 Scriptas = MainBoard.gameObject.GetComponent<BoardVer1>();
@@ -22,14 +27,14 @@ public class Priesininkas : MonoBehaviour
                 int kj = j * 10;
                 //for (int k = 0; k < numSelectors; k++)
                 //{
-                GameObject tmp = Instantiate(Scriptas.BoardUnitPrefab, new Vector3(ki+1000, 0, kj), Scriptas.BoardUnitPrefab.transform.rotation) as GameObject;
+                GameObject tmp = Instantiate(prefab, new Vector3(ki+1000, 0, kj), prefab.transform.rotation) as GameObject;
                 //GameObject go = tmp;
-                BoardUIVer1 tmpUI = tmp.GetComponent<BoardUIVer1>();
+                PriesTile tmpUI = tmp.GetComponent<PriesTile>();
                 //Debug.Log(tmpUI);
                 string name = string.Format("B1:[{0:00},{1:00}]", row, col);
-                tmpUI.lblBoardPosition.text = name;
-                tmpUI.COL = kj;
-                tmpUI.ROW = ki;
+                
+                tmpUI.col = kj;
+                tmpUI.row = ki;
                 //Debug.Log(name);
 
 
@@ -44,7 +49,7 @@ public class Priesininkas : MonoBehaviour
             row++;
         }
         StartCoroutine(MoveKamera());
-       
+
     }
 
     // Update is called once per frame
@@ -55,17 +60,20 @@ public class Priesininkas : MonoBehaviour
     IEnumerator MoveKamera()
     {
         BoardVer1 Scriptas = MainBoard.gameObject.GetComponent<BoardVer1>();
-        Vector3 oldpos = Scriptas.Main.transform.position;
+        Vector3 oldpos = PriesininkoKamera.transform.position;
         float t = 0.0f;
         while (t < 1.0f)
         {
             t += Time.deltaTime * (Time.timeScale / 2);
 
-            Scriptas.Main.transform.position = Vector3.Lerp(oldpos, new Vector3(oldpos.x + 1000, oldpos.y, oldpos.z), t);
-        //    Scriptas.Main.transform.rotation = Quaternion.Lerp(Scriptas.Main.transform.rotation, new Quaternion(Scriptas.Main.transform.rotation.x, 360, Scriptas.Main.transform.rotation.z, Scriptas.Main.transform.rotation.w), t);
+            PriesininkoKamera.transform.position = Vector3.Lerp(oldpos, new Vector3(1028, 98, -27), t);
+           
+            //  PriesininkoKamera.transform.rotation = Quaternion.Lerp(PriesininkoKamera.transform.rotation, new Quaternion(60, PriesininkoKamera.transform.rotation.y, PriesininkoKamera.transform.rotation.z, PriesininkoKamera.transform.rotation.w), t);
             yield return 0;
             
         }
+        PriesininkoKamera.transform.rotation = Quaternion.Euler(60, 0, 0);
 
     }
+ 
 }
