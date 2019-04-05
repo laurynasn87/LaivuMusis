@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ public class Priesininkas : MonoBehaviour
     public GameObject bullet;
     public GameObject explosion;
     public GameObject faieaa;
+    public bool ShotNotMiss = true;
+    List<String> visi = new List<string>();
     public bool ejimas = true;
     void Start()
     {
@@ -49,9 +52,100 @@ public class Priesininkas : MonoBehaviour
             row++;
         }
         StartCoroutine(MoveKamera());
+       
+        RandomDidesniLaivai(1, Scriptas.frigata, 0, 0, 4);
+        RandomDidesniLaivai(2, Scriptas.minininkas, 0, 0, 3);
+        RandomDidesniLaivai(3, Scriptas.korvete, 0, 0, 2);
+        RandomDidesniLaivai(4, Scriptas.Sarvuotlaivis, 0, 0, 1);
+    }
+    
+     void RandomDidesniLaivai(int ilgis, GameObject laivas, int paklaidax, int paklaiday, int kiekis)
+        {
+            System.Random rnd = new System.Random();
+            List<String> koordin = new List<string>();
+            for (int i = 0; i < kiekis; i++)
+            {
+                bool uzimta = false;
+                string xstring;
+                string ystring;
+
+                int x = rnd.Next(1, 11);
+                int y = rnd.Next(1, 11);
+                int vertical = rnd.Next(0, 2);
+
+                if (vertical == 0)
+                    while (x > 10 - ilgis)
+                        x--;
+                else
+                    while (y > 10 - ilgis)
+                        y--;
+                if (vertical == 0)
+                    for (int e = x; e < x + ilgis; e++)
+                    {
+                        if (e < 10) xstring = "0" + e;
+                        else xstring = e.ToString();
+                        if (y < 10) ystring = "0" + y;
+                        else ystring = y.ToString();
+                    if (koordin.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
+                    koordin.Add("B1:[" + xstring + "," + ystring + "]");
+                        if (visi.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
+                    }
+                else
+                    for (int e = y; e < y + ilgis; e++)
+                    {
+                        if (x < 10) xstring = "0" + x;
+                        else xstring = x.ToString();
+                        if (e < 10) ystring = "0" + e;
+                        else ystring = e.ToString();
+                    if (koordin.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
+                    koordin.Add("B1:[" + xstring + "," + ystring + "]");
+                        if (visi.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
+                   
+                }
+
+            if (uzimta)
+                {
+                koordin.Clear();
+                i--;
+                    continue;
+               
+            }
+                else
+                {
+
+                    koordin.ForEach(item => visi.Add(item));
+                    if (vertical == 0)
+                    {
+                    PlaceShip(koordin, paklaidax, 0);
+                        BoardVer1.Laivai.Add(new Laivas(ilgis, laivas.name, koordin, false));
+                    }
+                    else
+                    {
+                    PlaceShip(koordin, 0, paklaiday);
+                        BoardVer1.Laivai.Add(new Laivas(ilgis, laivas.name, koordin, true));
+                    }
+                }
+                koordin.Clear();
+            }
+
+        }
+
+    public void PlaceShip(List<String> Koordinates, int paklaidax, int paklaiday)
+    {
+        bool Placed = false;
+
+        foreach (String cord in Koordinates)
+        {
+
+            GameObject Tile = GetTileByString(cord);
+            if (Tile != null)
+            {
+                Tile.GetComponent<Renderer>().material.color = Color.red;
+            }
+         
+        }
 
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -73,7 +167,20 @@ public class Priesininkas : MonoBehaviour
             
         }
         PriesininkoKamera.transform.rotation = Quaternion.Euler(60, 0, 0);
+        Camera Kamera = PriesininkoKamera.GetComponent<Camera>();
+        Kamera.rect = new Rect(new Vector2(0.2f, 0), new Vector2(0.8f, 1));
+        Scriptas.Main.SetActive(true);
+        
 
     }
- 
+    public GameObject GetTileByString(string name)
+    {
+        GameObject[] plteles = GameObject.FindGameObjectsWithTag("board2");
+        foreach (GameObject tile in plteles)
+        {
+            if (tile.name.Equals(name)) return tile;
+        }
+
+        return null;
+    }
 }

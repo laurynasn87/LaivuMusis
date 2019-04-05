@@ -180,8 +180,9 @@ public class BoardVer1 : MonoBehaviour
     {
         active = false;
         ZadimoCanvas.gameObject.SetActive(false);
-        Main.transform.position = new Vector3(50, 88, 45);
-        Main.transform.rotation = new Quaternion(90, 0, 0, Main.transform.rotation.w);
+        Main.transform.position = new Vector3(44.5f, 88, 45);
+        Main.transform.rotation = Quaternion.Euler(90, 0, 0);
+        Main.GetComponent<Camera>().rect = new Rect(new Vector2(0, 0.6f), new Vector2(0.2f, 0.4f));
         Main.gameObject.SetActive(false);
          Priesininkas.SetActive(true);
         

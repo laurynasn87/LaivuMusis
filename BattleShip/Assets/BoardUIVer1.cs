@@ -356,6 +356,7 @@ public class BoardUIVer1 : MonoBehaviour
                     else xstring = e.ToString();
                     if (y < 10) ystring = "0" + y;
                     else ystring = y.ToString();
+                    if (koordin.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
                     koordin.Add("B1:[" + xstring + "," + ystring + "]");
                     if (visi.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
                 }
@@ -366,14 +367,18 @@ public class BoardUIVer1 : MonoBehaviour
                     else xstring = x.ToString();
                     if (e < 10) ystring = "0" + e;
                     else ystring = e.ToString();
+                    if (koordin.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
                     koordin.Add("B1:[" + xstring + "," + ystring + "]");
                     if (visi.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
+
                 }
        
             if (uzimta)
             {
+                koordin.Clear();
                 i--;
                 continue;
+                
             }
             else
             {

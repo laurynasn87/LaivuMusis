@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7211889223127021558}
   m_Layer: 0
   m_Name: CubePrefab
-  m_TagString: board
+  m_TagString: board2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -111,3 +111,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   row: 0
   col: 0
+  bullet: {fileID: 0}

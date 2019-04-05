@@ -36,15 +36,35 @@ public class PriesTile : MonoBehaviour
             name = gameObject.name;
             if (aryrakazkas(name))
             {
+                script.ShotNotMiss = true;
                 shoot(name);
+
             }
-            else miss(name);
+            else
+            {
+                miss(name);
+                script.ShotNotMiss = false;
+            }
            // script.ejimas = false;
         }
     }
     bool aryrakazkas(string name)
     {
-        return true;
+        bool yra = false;
+        int w = script.board.GetLength(0); // width
+        int h = script.board.GetLength(1); // height
+        for (int x = 0; x < w; x = x + 10)
+        {
+            for (int y = 0; y < h; y = y + 10)
+            {
+                if (script.board[x, y].name == name)
+                    yra = true;
+                    
+
+            }
+        }
+
+        return yra;
     }
     void shoot (string name)
     {
@@ -63,9 +83,12 @@ public class PriesTile : MonoBehaviour
         while (t < 1.0f)
         {
             t += Time.deltaTime * (Time.timeScale / 1);
-
-            bullet.transform.position = Vector3.Lerp(oldpos, new Vector3(transform.position.x, transform.position.y, transform.position.z), t);
-
+            try
+            {
+                bullet.transform.position = Vector3.Lerp(oldpos, new Vector3(transform.position.x, transform.position.y, transform.position.z), t);
+            }
+            catch(MissingReferenceException e)
+            { }
             //  PriesininkoKamera.transform.rotation = Quaternion.Lerp(PriesininkoKamera.transform.rotation, new Quaternion(60, PriesininkoKamera.transform.rotation.y, PriesininkoKamera.transform.rotation.z, PriesininkoKamera.transform.rotation.w), t);
             yield return 0;
 
