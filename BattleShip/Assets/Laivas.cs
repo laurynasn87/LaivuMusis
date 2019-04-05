@@ -8,6 +8,7 @@ public class Laivas
    public int ilgis;
     public string pavadinimas;
     public bool vertical;
+    public int pamusta = 0;
     public List<String> Koordinates = new List<String>();
 
     public Laivas(int ilgis, string pavadinimas, List<String> Koordinates, bool vertical)

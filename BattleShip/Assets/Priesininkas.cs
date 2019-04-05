@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Priesininkas : MonoBehaviour
 {
@@ -13,12 +14,17 @@ public class Priesininkas : MonoBehaviour
     public GameObject bullet;
     public GameObject explosion;
     public GameObject faieaa;
+    public AudioClip splash;
+    public Text ejimai;
+    public Text pataikymai;
+    public List<Laivas> Laivai2 = new List<Laivas>();
     public bool ShotNotMiss = true;
-    List<String> visi = new List<string>();
+   public List<String> visi = new List<string>();
     public bool ejimas = true;
+    BoardVer1 Scriptas;
     void Start()
     {
-        BoardVer1 Scriptas = MainBoard.gameObject.GetComponent<BoardVer1>();
+         Scriptas = MainBoard.gameObject.GetComponent<BoardVer1>();
         int row = 1;
         int col = 1;
 
@@ -117,12 +123,12 @@ public class Priesininkas : MonoBehaviour
                     if (vertical == 0)
                     {
                     PlaceShip(koordin, paklaidax, 0);
-                        BoardVer1.Laivai.Add(new Laivas(ilgis, laivas.name, koordin, false));
+                       Laivai2.Add(new Laivas(ilgis, laivas.name, koordin, false));
                     }
                     else
                     {
                     PlaceShip(koordin, 0, paklaiday);
-                        BoardVer1.Laivai.Add(new Laivas(ilgis, laivas.name, koordin, true));
+                        Laivai2.Add(new Laivas(ilgis, laivas.name, koordin, true));
                     }
                 }
                 koordin.Clear();
@@ -140,7 +146,8 @@ public class Priesininkas : MonoBehaviour
             GameObject Tile = GetTileByString(cord);
             if (Tile != null)
             {
-                Tile.GetComponent<Renderer>().material.color = Color.red;
+                // Tile.GetComponent<Renderer>().material.color = Color.red;
+
             }
          
         }
@@ -158,7 +165,7 @@ public class Priesininkas : MonoBehaviour
         float t = 0.0f;
         while (t < 1.0f)
         {
-            t += Time.deltaTime * (Time.timeScale / 2);
+            t += Time.deltaTime * (Time.timeScale / 1.3f);
 
             PriesininkoKamera.transform.position = Vector3.Lerp(oldpos, new Vector3(1028, 98, -27), t);
            
@@ -182,5 +189,43 @@ public class Priesininkas : MonoBehaviour
         }
 
         return null;
+    }
+    public void AI()
+    {
+        WWW www = new WWW("https://bastioned-public.000webhostapp.com/GetCounterData.php");
+       // Debug.LogWarning(www.size);
+        Scriptas.shoot("B1:[03,06]");
+
+    }
+    public void atimtigyvybe(string name)
+    {
+        Debug.LogWarning(Laivai2.Capacity);
+        foreach (Laivas laivai in Laivai2)
+        {
+            Debug.LogWarning(laivai.Koordinates.Count);
+            if (laivai.Koordinates.Contains(name))
+            {
+                laivai.pamusta++;
+                Debug.LogWarning("Pamustas " + laivai.pavadinimas );
+            }
+            if (laivai.pamusta>=laivai.ilgis)
+            {
+                for (int i =0; i<laivai.ilgis; i++)
+                {
+
+                    GameObject tile = GetTileByString(laivai.Koordinates[i]);
+                    Instantiate(explosion, new Vector3(tile.transform.position.x, tile.transform.position.y, tile.transform.position.z), Quaternion.Euler(60, 90, 0));
+                }
+                
+            }
+        }
+    }
+    public void PridetiEjima()
+    {
+        ejimai.text = (int.Parse(ejimai.text) + 1).ToString();
+    }
+    public void PridetPataikyma()
+    {
+        pataikymai.text = (int.Parse(pataikymai.text) + 1).ToString();
     }
 }

@@ -9,6 +9,7 @@ public class PriesTile : MonoBehaviour
     // Start is called before the first frame update
     Priesininkas script;
     public GameObject bullet;
+    
     void Start()
     {
         script = GameObject.FindGameObjectWithTag("Respawn").GetComponent<Priesininkas>();
@@ -21,49 +22,48 @@ public class PriesTile : MonoBehaviour
     }
     private void OnMouseEnter()
     {
-        Debug.LogWarning(gameObject.name);
+      //  Debug.LogWarning(gameObject.name);
+        if (GetComponent<Renderer>().material.color != Color.black && GetComponent<Renderer>().material.color != Color.blue)
         GetComponent<Renderer>().material.color = Color.red;
     }
     private void OnMouseExit()
     {
-        GetComponent<Renderer>().material.color = Color.white;
+        if (GetComponent<Renderer>().material.color != Color.black && GetComponent<Renderer>().material.color != Color.blue)
+            GetComponent<Renderer>().material.color = Color.white;
     }
     private void OnMouseDown()
-    {
+    { 
+        
         if (script.ejimas)
         {
             string name;
             name = gameObject.name;
             if (aryrakazkas(name))
             {
+                
                 script.ShotNotMiss = true;
                 shoot(name);
-
+                script.atimtigyvybe(name);
+                script.PridetPataikyma();
+            //    GetComponent<Renderer>().material.color = Color.black;
             }
             else
             {
+                GetComponent<Renderer>().material.color = Color.blue;
                 miss(name);
                 script.ShotNotMiss = false;
+              //  GetComponent<Renderer>().material.color = Color.blue;
             }
-           // script.ejimas = false;
+            script.ejimas = false;
+            script.AI();
+            script.PridetiEjima();
         }
     }
     bool aryrakazkas(string name)
     {
         bool yra = false;
-        int w = script.board.GetLength(0); // width
-        int h = script.board.GetLength(1); // height
-        for (int x = 0; x < w; x = x + 10)
-        {
-            for (int y = 0; y < h; y = y + 10)
-            {
-                if (script.board[x, y].name == name)
-                    yra = true;
-                    
-
-            }
-        }
-
+        if (script.visi.Contains(name))
+            yra = true;
         return yra;
     }
     void shoot (string name)
@@ -73,7 +73,8 @@ public class PriesTile : MonoBehaviour
     }
     void miss(string name)
     {
-
+        bullet = Instantiate(script.bullet, new Vector3(953, 184, 32), Quaternion.Euler(60, 90, 0));
+        StartCoroutine(ProjectileMove());
     }
     IEnumerator ProjectileMove()
     {
