@@ -27,15 +27,17 @@ public class bullet : MonoBehaviour
             GameObject explosion = script.explosion;
             Instantiate(script.explosion, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.Euler(60, 90, 0));
             Instantiate(script.faieaa, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.Euler(60, 90, 0));
-            AudioSource.PlayClipAtPoint(audio, transform.position, 50);
+            AudioSource.PlayClipAtPoint(audio, transform.position, 1);
         GameObject me = gameObject;
-
+            other.gameObject.GetComponent<Renderer>().material.color = Color.black;
             Destroy(me);
             
         }
         else
         {
             GameObject me = gameObject;
+            AudioSource.PlayClipAtPoint(script.splash, transform.position, 1);
+            
             Destroy(me);
 
 

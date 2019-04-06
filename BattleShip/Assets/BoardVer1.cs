@@ -6,6 +6,7 @@ using Color = UnityEngine.Color;
 using System.Linq;
 using System;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
 public class BoardVer1 : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class BoardVer1 : MonoBehaviour
     public GameObject Priesininkas;
     //public GameObject klonas;
     public Canvas ZadimoCanvas;
+    public bool pataike = false;
     string CreateInsert = "https://bastioned-public.000webhostapp.com/InsertStuff.php";
     string GetInfo = "https://bastioned-public.000webhostapp.com/GetStuff.php";
     string Counteris = "https://bastioned-public.000webhostapp.com/CountStuff.php?";
@@ -141,8 +143,9 @@ public class BoardVer1 : MonoBehaviour
         Main.transform.position = (new Vector3(45, Main.transform.position.y, Main.transform.position.z));
 
     }
-    public String indexs(String name)
+    public List<int> index(String name)
     {
+        List<int> xy = new List<int>();
         int w = board.GetLength(0); // width
         int h = board.GetLength(1); // height
 
@@ -151,12 +154,17 @@ public class BoardVer1 : MonoBehaviour
             for (int y = 0; y < h; y = y + 10)
             {
                 if (board[x, y].name.Equals(name))
-                    return (x + " " + y);
+                {
+                    xy.Add(x);
+                    xy.Add(y);
+                    return (xy);
+                }
+                   
 
             }
         }
 
-        return "Nerasta";
+        return null;
     }
     public void LengthtoPav()
     {
@@ -188,7 +196,7 @@ public class BoardVer1 : MonoBehaviour
         
      //   foreach (Laivas Lai in Laivai)
     //    {
-         //   Debug.LogWarning(Lai.pavadinimas);
+         //  
          //   foreach (String index in Lai.Koordinates)
          //   {
                // Debug.LogWarning(index);
@@ -206,9 +214,20 @@ public class BoardVer1 : MonoBehaviour
         WWW www = new WWW(CreateInsert, form);
     }
 
-    public void GetStuff()
+    IEnumerator GetStuff()
     {
-        WWW www = new WWW(GetInfo);
+        UnityWebRequest www = UnityWebRequest.Get(GetInfo);
+        yield return www.SendWebRequest();
+
+        if (www.isNetworkError || www.isHttpError)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            Debug.Log(www.downloadHandler.text);
+
+        }
     }
 
     public void Counter(string koordinates)
@@ -218,14 +237,76 @@ public class BoardVer1 : MonoBehaviour
         WWW www = new WWW(url);
     }
 
-    public void GetCounterData()
+    IEnumerator GetCounterData()
     {
-        WWW www = new WWW(CounterData);
+        //WWW www = new WWW(CounterData);
+
+        UnityWebRequest www = UnityWebRequest.Get(CounterData);
+        yield return www.SendWebRequest();
+
+        if (www.isNetworkError || www.isHttpError)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            Debug.Log(www.downloadHandler.text);
+
+        }
     }
 
     public GameObject[,] GetBoard()
     {
         return board;
+    }
+    public void shoot(string name)
+    {
+        Priesininkas pries = Priesininkas.GetComponent<Priesininkas>();
+        List<int>kord = index(name);
+        int x = kord[0];
+        int y = kord[1];
+
+        if (arpataike(name)) pries.ShotNotMiss = true;
+GameObject kulka = Instantiate(Priesininkas.GetComponent<Priesininkas>().bullet , new Vector3(166, 184, 32), Quaternion.Euler(60, -90, 0));
+        StartCoroutine(ProjectileMove(kulka.transform.position, board[x,y].transform.position, kulka));
+        pries.ejimas = true;
+    }
+    public bool arpataike(string name)
+    {
+        bool pataike = false;
+
+        foreach (Laivas laivas in Laivai)
+        {
+            foreach (String kord in laivas.Koordinates)
+                if (kord.Equals(name))
+                {
+                    pataike = true;
+                    break;
+                }
+
+        }
+
+        return pataike;
+    }
+    IEnumerator ProjectileMove( Vector3 oldpos, Vector3 newpos, GameObject bullet)
+    {
+
+        
+        float t = 0.0f;
+        while (t < 1.0f)
+        {
+            t += Time.deltaTime * (Time.timeScale / 1);
+            try
+            {
+                bullet.transform.position = Vector3.Lerp(oldpos, newpos, t);
+            }
+            catch (MissingReferenceException e)
+            { }
+            //  PriesininkoKamera.transform.rotation = Quaternion.Lerp(PriesininkoKamera.transform.rotation, new Quaternion(60, PriesininkoKamera.transform.rotation.y, PriesininkoKamera.transform.rotation.z, PriesininkoKamera.transform.rotation.w), t);
+            yield return 0;
+
+        }
+
     }
 }
 
