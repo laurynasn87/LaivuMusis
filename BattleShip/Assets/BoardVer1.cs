@@ -214,7 +214,7 @@ public class BoardVer1 : MonoBehaviour
         WWW www = new WWW(CreateInsert, form);
     }
 
-    IEnumerator GetStuff()
+ public IEnumerator GetStuff()
     {
         UnityWebRequest www = UnityWebRequest.Get(GetInfo);
         yield return www.SendWebRequest();
@@ -225,7 +225,9 @@ public class BoardVer1 : MonoBehaviour
         }
         else
         {
-            Debug.Log(www.downloadHandler.text);
+            Priesininkas.GetComponent<Priesininkas>().AIKord = www.downloadHandler.text;
+         
+            
 
         }
     }
@@ -237,7 +239,7 @@ public class BoardVer1 : MonoBehaviour
         WWW www = new WWW(url);
     }
 
-    IEnumerator GetCounterData()
+  public  IEnumerator GetCounterData()
     {
         //WWW www = new WWW(CounterData);
 
@@ -250,7 +252,7 @@ public class BoardVer1 : MonoBehaviour
         }
         else
         {
-            Debug.Log(www.downloadHandler.text);
+            Priesininkas.GetComponent<Priesininkas>().AIKord = www.downloadHandler.text;
 
         }
     }

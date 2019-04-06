@@ -21,10 +21,12 @@ public class Priesininkas : MonoBehaviour
     public bool ShotNotMiss = true;
    public List<String> visi = new List<string>();
     public bool ejimas = true;
+    public string AIKord;
     BoardVer1 Scriptas;
     void Start()
     {
          Scriptas = MainBoard.gameObject.GetComponent<BoardVer1>();
+        StartCoroutine(Scriptas.GetComponent<BoardVer1>().GetCounterData());
         int row = 1;
         int col = 1;
 
@@ -138,7 +140,7 @@ public class Priesininkas : MonoBehaviour
 
     public void PlaceShip(List<String> Koordinates, int paklaidax, int paklaiday)
     {
-        bool Placed = false;
+       
 
         foreach (String cord in Koordinates)
         {
@@ -191,10 +193,13 @@ public class Priesininkas : MonoBehaviour
         return null;
     }
     public void AI()
-    {
-        WWW www = new WWW("https://bastioned-public.000webhostapp.com/GetCounterData.php");
-       // Debug.LogWarning(www.size);
-        Scriptas.shoot("B1:[03,06]");
+    {// AI kord == json string
+     //   Debug.LogError(AIKord);
+        DataFromJson[] player = JsonHelper.FromJson<DataFromJson>(AIKord);
+        for (int i = 0; i < player.Length; i++)
+             Debug.LogWarning(player[i].koordinates);
+
+        Scriptas.shoot("B1:[03,06]");// cia reikia paduoti koordinate i kuria saus 
 
     }
     public void atimtigyvybe(string name)
@@ -227,5 +232,33 @@ public class Priesininkas : MonoBehaviour
     public void PridetPataikyma()
     {
         pataikymai.text = (int.Parse(pataikymai.text) + 1).ToString();
+    }
+}
+public static class JsonHelper
+{
+    public static T[] FromJson<T>(string json)
+    {
+        Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(json);
+        return wrapper.Items;
+    }
+
+    public static string ToJson<T>(T[] array)
+    {
+        Wrapper<T> wrapper = new Wrapper<T>();
+        wrapper.Items = array;
+        return JsonUtility.ToJson(wrapper);
+    }
+
+    public static string ToJson<T>(T[] array, bool prettyPrint)
+    {
+        Wrapper<T> wrapper = new Wrapper<T>();
+        wrapper.Items = array;
+        return JsonUtility.ToJson(wrapper, prettyPrint);
+    }
+
+    [Serializable]
+    private class Wrapper<T>
+    {
+        public T[] Items;
     }
 }
