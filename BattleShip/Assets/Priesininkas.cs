@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +8,14 @@ public class Priesininkas : MonoBehaviour
     // Start is called before the first frame update
     public GameObject[,] board = new GameObject[100, 100];
     public GameObject MainBoard;
-
+    public GameObject PriesininkoKamera;
+    public GameObject prefab;
+    public GameObject bullet;
+    public GameObject explosion;
+    public GameObject faieaa;
+    public bool ShotNotMiss = true;
+    List<String> visi = new List<string>();
+    public bool ejimas = true;
     void Start()
     {
         BoardVer1 Scriptas = MainBoard.gameObject.GetComponent<BoardVer1>();
@@ -22,14 +30,14 @@ public class Priesininkas : MonoBehaviour
                 int kj = j * 10;
                 //for (int k = 0; k < numSelectors; k++)
                 //{
-                GameObject tmp = Instantiate(Scriptas.BoardUnitPrefab, new Vector3(ki+1000, 0, kj), Scriptas.BoardUnitPrefab.transform.rotation) as GameObject;
+                GameObject tmp = Instantiate(prefab, new Vector3(ki+1000, 0, kj), prefab.transform.rotation) as GameObject;
                 //GameObject go = tmp;
-                BoardUIVer1 tmpUI = tmp.GetComponent<BoardUIVer1>();
+                PriesTile tmpUI = tmp.GetComponent<PriesTile>();
                 //Debug.Log(tmpUI);
                 string name = string.Format("B1:[{0:00},{1:00}]", row, col);
-                tmpUI.lblBoardPosition.text = name;
-                tmpUI.COL = kj;
-                tmpUI.ROW = ki;
+                
+                tmpUI.col = kj;
+                tmpUI.row = ki;
                 //Debug.Log(name);
 
 
@@ -45,8 +53,99 @@ public class Priesininkas : MonoBehaviour
         }
         StartCoroutine(MoveKamera());
        
+        RandomDidesniLaivai(1, Scriptas.frigata, 0, 0, 4);
+        RandomDidesniLaivai(2, Scriptas.minininkas, 0, 0, 3);
+        RandomDidesniLaivai(3, Scriptas.korvete, 0, 0, 2);
+        RandomDidesniLaivai(4, Scriptas.Sarvuotlaivis, 0, 0, 1);
     }
+    
+     void RandomDidesniLaivai(int ilgis, GameObject laivas, int paklaidax, int paklaiday, int kiekis)
+        {
+            System.Random rnd = new System.Random();
+            List<String> koordin = new List<string>();
+            for (int i = 0; i < kiekis; i++)
+            {
+                bool uzimta = false;
+                string xstring;
+                string ystring;
 
+                int x = rnd.Next(1, 11);
+                int y = rnd.Next(1, 11);
+                int vertical = rnd.Next(0, 2);
+
+                if (vertical == 0)
+                    while (x > 10 - ilgis)
+                        x--;
+                else
+                    while (y > 10 - ilgis)
+                        y--;
+                if (vertical == 0)
+                    for (int e = x; e < x + ilgis; e++)
+                    {
+                        if (e < 10) xstring = "0" + e;
+                        else xstring = e.ToString();
+                        if (y < 10) ystring = "0" + y;
+                        else ystring = y.ToString();
+                    if (koordin.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
+                    koordin.Add("B1:[" + xstring + "," + ystring + "]");
+                        if (visi.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
+                    }
+                else
+                    for (int e = y; e < y + ilgis; e++)
+                    {
+                        if (x < 10) xstring = "0" + x;
+                        else xstring = x.ToString();
+                        if (e < 10) ystring = "0" + e;
+                        else ystring = e.ToString();
+                    if (koordin.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
+                    koordin.Add("B1:[" + xstring + "," + ystring + "]");
+                        if (visi.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
+                   
+                }
+
+            if (uzimta)
+                {
+                koordin.Clear();
+                i--;
+                    continue;
+               
+            }
+                else
+                {
+
+                    koordin.ForEach(item => visi.Add(item));
+                    if (vertical == 0)
+                    {
+                    PlaceShip(koordin, paklaidax, 0);
+                        BoardVer1.Laivai.Add(new Laivas(ilgis, laivas.name, koordin, false));
+                    }
+                    else
+                    {
+                    PlaceShip(koordin, 0, paklaiday);
+                        BoardVer1.Laivai.Add(new Laivas(ilgis, laivas.name, koordin, true));
+                    }
+                }
+                koordin.Clear();
+            }
+
+        }
+
+    public void PlaceShip(List<String> Koordinates, int paklaidax, int paklaiday)
+    {
+        bool Placed = false;
+
+        foreach (String cord in Koordinates)
+        {
+
+            GameObject Tile = GetTileByString(cord);
+            if (Tile != null)
+            {
+                Tile.GetComponent<Renderer>().material.color = Color.red;
+            }
+         
+        }
+
+    }
     // Update is called once per frame
     void Update()
     {
@@ -55,17 +154,33 @@ public class Priesininkas : MonoBehaviour
     IEnumerator MoveKamera()
     {
         BoardVer1 Scriptas = MainBoard.gameObject.GetComponent<BoardVer1>();
-        Vector3 oldpos = Scriptas.Main.transform.position;
+        Vector3 oldpos = PriesininkoKamera.transform.position;
         float t = 0.0f;
         while (t < 1.0f)
         {
             t += Time.deltaTime * (Time.timeScale / 2);
 
-            Scriptas.Main.transform.position = Vector3.Lerp(oldpos, new Vector3(oldpos.x + 1000, oldpos.y, oldpos.z), t);
-        //    Scriptas.Main.transform.rotation = Quaternion.Lerp(Scriptas.Main.transform.rotation, new Quaternion(Scriptas.Main.transform.rotation.x, 360, Scriptas.Main.transform.rotation.z, Scriptas.Main.transform.rotation.w), t);
+            PriesininkoKamera.transform.position = Vector3.Lerp(oldpos, new Vector3(1028, 98, -27), t);
+           
+            //  PriesininkoKamera.transform.rotation = Quaternion.Lerp(PriesininkoKamera.transform.rotation, new Quaternion(60, PriesininkoKamera.transform.rotation.y, PriesininkoKamera.transform.rotation.z, PriesininkoKamera.transform.rotation.w), t);
             yield return 0;
             
         }
+        PriesininkoKamera.transform.rotation = Quaternion.Euler(60, 0, 0);
+        Camera Kamera = PriesininkoKamera.GetComponent<Camera>();
+        Kamera.rect = new Rect(new Vector2(0.2f, 0), new Vector2(0.8f, 1));
+        Scriptas.Main.SetActive(true);
+        
 
+    }
+    public GameObject GetTileByString(string name)
+    {
+        GameObject[] plteles = GameObject.FindGameObjectsWithTag("board2");
+        foreach (GameObject tile in plteles)
+        {
+            if (tile.name.Equals(name)) return tile;
+        }
+
+        return null;
     }
 }

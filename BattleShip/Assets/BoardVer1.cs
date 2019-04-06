@@ -14,40 +14,36 @@ public class BoardVer1 : MonoBehaviour
     public GameObject BoardUnitPrefab;
     public GameObject mygtukasZaisti;
     //public int numSelectors = 10;
-    public GameObject[,] board = new GameObject[100, 100];
+    public GameObject[,] board;
     public GameObject Sarvuotlaivis;
     public GameObject korvete;
     public GameObject minininkas;
     public GameObject frigata;
     public bool vertical = true;
     public int Length = 1;
-    public Text koordinates;
     public GameObject Main;
     public string LaivoPavadinimas;
     public GameObject Priesininkas;
     //public GameObject klonas;
-
+    public Canvas ZadimoCanvas;
     string CreateInsert = "https://bastioned-public.000webhostapp.com/InsertStuff.php";
     string GetInfo = "https://bastioned-public.000webhostapp.com/GetStuff.php";
     string Counteris = "https://bastioned-public.000webhostapp.com/CountStuff.php?";
     string CounterData = "https://bastioned-public.000webhostapp.com/GetCounterData.php";
 
-    // Start is called before the first frame update
-    void Start()
+    bool active = true;
+    public void GenerateBoard()
     {
-        Main.SetActive(true);
-        Main.transform.position =(new Vector3(Main.transform.position.x - 20, Main.transform.position.y, Main.transform.position.z));
-   
-        //Transform mainkamera = Camera.main.transform;
-        //boardd = new board[10];
-        //board = new GameObject[10,10];
+        board = null;
+        board = new GameObject[100, 100]; 
         int row = 1;
         int col = 1;
+       
         for (int i = 0; i < 10; i++)
         {
             for (int j = 0; j < 10; j++)
             {
-                int ki=i*10;
+                int ki = i * 10;
                 int kj = j * 10;
                 //for (int k = 0; k < numSelectors; k++)
                 //{
@@ -73,36 +69,50 @@ public class BoardVer1 : MonoBehaviour
             row++;
         }
     }
+    // Start is called before the first frame update
+    void Start()
+    {
+        Main.SetActive(true);
+        Main.transform.position = (new Vector3(Main.transform.position.x - 20, Main.transform.position.y, Main.transform.position.z));
+        GenerateBoard();
+        //Transform mainkamera = Camera.main.transform;
+        //boardd = new board[10];
+        //board = new GameObject[10,10];
+    
+
+    }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 mouse = Input.mousePosition;
-        Ray castPoint = Camera.main.ScreenPointToRay(mouse);
-        RaycastHit hit;
-      //  if (Physics.Raycast(castPoint, out hit, Mathf.Infinity))
-     //       OnMouseEnter(hit);
-
-        if (Input.GetMouseButtonDown(0))
+        if (active)
         {
-             
-            if (Physics.Raycast(castPoint, out hit, Mathf.Infinity))
+            Vector3 mouse = Input.mousePosition;
+            Ray castPoint = Camera.main.ScreenPointToRay(mouse);
+            RaycastHit hit;
+            //  if (Physics.Raycast(castPoint, out hit, Mathf.Infinity))
+            //       OnMouseEnter(hit);
+
+            if (Input.GetMouseButtonDown(0))
             {
-                
 
-            //    String index = GetObjectByCoordinates(hit).name;
-             //   koordinates.text = indexs(index);
-               
+                if (Physics.Raycast(castPoint, out hit, Mathf.Infinity))
+                {
+
+
+                    //    String index = GetObjectByCoordinates(hit).name;
+                    //   koordinates.text = indexs(index);
+
+                }
+
             }
-
         }
-
     }
 
-    GameObject GetObjectByCoordinates(RaycastHit hits)
+  public  GameObject GetObjectByCoordinates(RaycastHit hits)
     {
         GameObject[] objektai;
-        GameObject Atsakymas= null;
+        GameObject Atsakymas = null;
         objektai = GameObject.FindGameObjectsWithTag("board");
         foreach (GameObject taskas in objektai)
         {
@@ -120,7 +130,7 @@ public class BoardVer1 : MonoBehaviour
         return Atsakymas;
     }
 
-   public void SetEnabled()
+    public void SetEnabled()
     {
         enabled = true;
     }
@@ -128,21 +138,21 @@ public class BoardVer1 : MonoBehaviour
     public void Zaistimygtukas()
     {
         mygtukasZaisti.SetActive(true);
-            Main.transform.position = (new Vector3(Main.transform.position.x + 20, Main.transform.position.y, Main.transform.position.z));
-    
+        Main.transform.position = (new Vector3(45, Main.transform.position.y, Main.transform.position.z));
+
     }
     public String indexs(String name)
     {
         int w = board.GetLength(0); // width
         int h = board.GetLength(1); // height
-        
-        for (int x = 0; x < w; x=x+10)
+
+        for (int x = 0; x < w; x = x + 10)
         {
-            for (int y = 0; y < h; y=y+10)
+            for (int y = 0; y < h; y = y + 10)
             {
                 if (board[x, y].name.Equals(name))
                     return (x + " " + y);
-                    
+
             }
         }
 
@@ -168,18 +178,25 @@ public class BoardVer1 : MonoBehaviour
     }
     public void printStuff()
     {
-        Priesininkas.SetActive(true);
+        active = false;
+        ZadimoCanvas.gameObject.SetActive(false);
+        Main.transform.position = new Vector3(44.5f, 88, 45);
+        Main.transform.rotation = Quaternion.Euler(90, 0, 0);
+        Main.GetComponent<Camera>().rect = new Rect(new Vector2(0, 0.6f), new Vector2(0.2f, 0.4f));
+        Main.gameObject.SetActive(false);
+         Priesininkas.SetActive(true);
+        
+     //   foreach (Laivas Lai in Laivai)
+    //    {
+         //   Debug.LogWarning(Lai.pavadinimas);
+         //   foreach (String index in Lai.Koordinates)
+         //   {
+               // Debug.LogWarning(index);
+                // InsertStuff(index);
+                //  Counter(index);
+          //  }
 
-        foreach (Laivas Lai in Laivai)
-        {
-            foreach (String index in Lai.Koordinates)
-            {
-                Debug.LogWarning(index);
-                InsertStuff(index);
-                Counter(index);
-            }
-                
-        }
+    //    }
     }
 
     public void InsertStuff(string koordinates)
@@ -194,7 +211,7 @@ public class BoardVer1 : MonoBehaviour
         WWW www = new WWW(GetInfo);
     }
 
-    public void Counter (string koordinates)
+    public void Counter(string koordinates)
     {
         string url = Counteris + "koordinates='" + koordinates + "'";
         //Debug.Log(koordinates + url);
@@ -206,5 +223,9 @@ public class BoardVer1 : MonoBehaviour
         WWW www = new WWW(CounterData);
     }
 
+    public GameObject[,] GetBoard()
+    {
+        return board;
+    }
 }
 

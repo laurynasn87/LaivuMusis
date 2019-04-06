@@ -12,6 +12,9 @@ TagManager:
   - Kreiseris
   - Minininkas
   - Frigata
+  - Fire
+  - Laivai
+  - board2
   layers:
   - Default
   - TransparentFX
