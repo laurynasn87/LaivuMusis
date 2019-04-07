@@ -27,8 +27,6 @@ public class BoardUIVer1 : MonoBehaviour
         Lenta = GameObject.FindGameObjectWithTag("LentaMano");
         Script = Lenta.GetComponent<BoardVer1>();
         board2 = Script.GetBoard();
-        var a = Script.GetCounterData();
-        Debug.Log(aa.AI2());
         //lblBoardPosition.text = "B1[00:00]";
         //lblBoardPosition.name = "";
     }

@@ -30,6 +30,7 @@ public class Priesininkas : MonoBehaviour
     {
          Scriptas = MainBoard.gameObject.GetComponent<BoardVer1>();
         StartCoroutine(Scriptas.GetComponent<BoardVer1>().GetCounterData());
+
         int row = 1;
         int col = 1;
 
@@ -211,16 +212,18 @@ public class Priesininkas : MonoBehaviour
 
     public string[] items;
 
-    public IEnumerator AI2()
+IEnumerator AI2()
     {
         
             WWW www = new WWW("https://bastioned-public.000webhostapp.com/GetCounterData.php");
             yield return www;
 
             string wwwData = www.text;
+        var bytes = System.Text.Encoding.UTF8.GetBytes(wwwData);
+        Debug.Log(wwwData);
             items = wwwData.Split(';');
             Scriptas.shoot(GetDataValue(items[0], "koordinates:"));
-            GetDataValue(items[0], "koordinates:");
+            //GetDataValue(items[0], "koordinates:");
     }
 
     public string GetDataValue(string data, string index)
