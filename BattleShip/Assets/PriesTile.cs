@@ -32,9 +32,9 @@ public class PriesTile : MonoBehaviour
             GetComponent<Renderer>().material.color = Color.white;
     }
     private void OnMouseDown()
-    { 
-        
-        if (script.ejimas)
+    {
+        if (GetComponent<Renderer>().material.color == Color.black || GetComponent<Renderer>().material.color == Color.blue) return;
+            if (script.ejimas)
         {
             string name;
             name = gameObject.name;
