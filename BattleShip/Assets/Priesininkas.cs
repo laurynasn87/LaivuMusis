@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using SimpleJSON;
+using UnityEngine.Networking;
 
 public class Priesininkas : MonoBehaviour
 {
@@ -23,6 +25,7 @@ public class Priesininkas : MonoBehaviour
     public bool ejimas = true;
     public string AIKord;
     BoardVer1 Scriptas;
+    string CounterData = "https://bastioned-public.000webhostapp.com/GetCounterData.php";
     void Start()
     {
          Scriptas = MainBoard.gameObject.GetComponent<BoardVer1>();
@@ -195,13 +198,39 @@ public class Priesininkas : MonoBehaviour
     public void AI()
     {// AI kord == json string
      //   Debug.LogError(AIKord);
-        DataFromJson[] player = JsonHelper.FromJson<DataFromJson>(AIKord);
-        for (int i = 0; i < player.Length; i++)
-             Debug.LogWarning(player[i].koordinates);
+     /*DataFromJson[] player = JsonHelper.FromJson<DataFromJson>(AIKord);
+     for (int i = 0; i < player.Length; i++)
+          Debug.LogWarning(player[i].koordinates);
 
-        Scriptas.shoot("B1:[03,06]");// cia reikia paduoti koordinate i kuria saus 
+     Scriptas.shoot("B1:[03,06]");// cia reikia paduoti koordinate i kuria saus */
+
+        //WWW www = new WWW(CounterData);
+       
 
     }
+
+    public string[] items;
+
+    public IEnumerator AI2()
+    {
+        
+            WWW www = new WWW("https://bastioned-public.000webhostapp.com/GetCounterData.php");
+            yield return www;
+
+            string wwwData = www.text;
+            items = wwwData.Split(';');
+            Scriptas.shoot(GetDataValue(items[0], "koordinates:"));
+            GetDataValue(items[0], "koordinates:");
+    }
+
+    public string GetDataValue(string data, string index)
+    {
+        string value = data.Substring(data.IndexOf(index) + index.Length);
+        value = value.Remove(value.IndexOf("|"));
+        //Scriptas.shoot(value);
+        return value;
+    }
+
     public void atimtigyvybe(string name)
     {
         Debug.LogWarning(Laivai2.Capacity);

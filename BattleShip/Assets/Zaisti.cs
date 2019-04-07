@@ -8,6 +8,7 @@ public class Zaisti : MonoBehaviour
     public GameObject ZaidimoCanvas;
 
     public GameObject Board;
+
     // Start is called before the first frame update
     public void Camerazaisti()
     {
@@ -18,8 +19,6 @@ public class Zaisti : MonoBehaviour
          BoardVer1 script =  Board.GetComponent<BoardVer1>();
         script.enabled = true;
         ZaidimoCanvas.SetActive(true);
-
-        
 
     }
     private void Start()

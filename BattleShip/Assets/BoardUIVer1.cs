@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class BoardUIVer1 : MonoBehaviour
 {
+    string CounterData = "https://bastioned-public.000webhostapp.com/GetCounterData.php";
 
     public Text lblBoardPosition;
 
@@ -16,6 +17,7 @@ public class BoardUIVer1 : MonoBehaviour
     public int length = 1;
     GameObject Lenta;
     BoardVer1 Script;
+    Priesininkas aa;
     GameObject[,] board2 = new GameObject[100, 100];
     List<GameObject> Dabartiniai = new List<GameObject>();
     List<String> visi = new List<string>();
@@ -25,6 +27,8 @@ public class BoardUIVer1 : MonoBehaviour
         Lenta = GameObject.FindGameObjectWithTag("LentaMano");
         Script = Lenta.GetComponent<BoardVer1>();
         board2 = Script.GetBoard();
+        var a = Script.GetCounterData();
+        Debug.Log(aa.AI2());
         //lblBoardPosition.text = "B1[00:00]";
         //lblBoardPosition.name = "";
     }
@@ -399,7 +403,7 @@ public class BoardUIVer1 : MonoBehaviour
             koordin.Clear();
         }
         pasibaige(ilgis.ToString());
-        
+
     }
     void refresh()
     {
