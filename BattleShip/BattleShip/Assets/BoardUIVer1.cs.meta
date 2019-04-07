@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 9f470b94e755848c4ac38098480a70ff
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - lblBoardPosition: {fileID: 1368507045, guid: 52ff25cc5eb534a7c899a673b0ec1bdf,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
