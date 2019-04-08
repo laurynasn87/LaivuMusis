@@ -5,11 +5,12 @@ using UnityEngine;
 public class BulletAi : MonoBehaviour
 {
     Priesininkas script; // Start is called before the first frame update
+    public AudioClip klipas;
     void Start()
     {
         script = GameObject.FindGameObjectWithTag("Respawn").GetComponent<Priesininkas>();
         Debug.LogWarning("STOP2");
-        GameObject[] laivai = GameObject.FindGameObjectsWithTag("Laivia");
+        GameObject[] laivai = GameObject.FindGameObjectsWithTag("Laivai");
         foreach (GameObject laiveliai in laivai)
         {
             Physics.IgnoreCollision(laiveliai.GetComponent<Collider>(), GetComponent<Collider>());
@@ -23,28 +24,29 @@ public class BulletAi : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        
+
         GameObject me = gameObject;
         AudioSource garsas;
         if (script.AiShot)
         {
-        //   
-      
+            //   
+
             try
             {
+                if (other.gameObject.GetComponent<Renderer>().material.color!=Color.yellow)
                 other.gameObject.GetComponent<Renderer>().material.color = Color.black;
                 GameObject explosion = script.explosion;
-                    Instantiate(script.explosion, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.Euler(60, 90, 0));
-                   Instantiate(script.faieaa, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.Euler(60, 90, 0));
-                   garsas = GetComponent<AudioSource>();
-                     garsas.clip = script.explosionaudio;
-                 garsas.Play();
-                GetComponents<AudioSource>()[1].Play();
+                Instantiate(script.explosion, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.Euler(60, 90, 0));
+                Instantiate(script.faieaa, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.Euler(60, 90, 0));
+                AudioSource sound = other.gameObject.AddComponent<AudioSource>();
+                sound.clip = klipas;
+                sound.enabled = true;
+                sound.Play();
             }
             catch
             {
             }
-            
+
 
         }
         else
@@ -60,8 +62,8 @@ public class BulletAi : MonoBehaviour
             garsas = GetComponent<AudioSource>();
             garsas.clip = script.splash;
             garsas.Play();
-           
-            
+
+
 
 
         }

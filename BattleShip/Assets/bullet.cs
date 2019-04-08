@@ -5,14 +5,16 @@ using UnityEngine;
 public class bullet : MonoBehaviour
 {
     Priesininkas script;
-
-
+    AudioSource[] explosioon;
+    public AudioClip klipas;
+    public AudioClip splash;
     // Start is called before the first frame update
     void Start()
     {
         script = GameObject.FindGameObjectWithTag("Respawn").GetComponent<Priesininkas>();
         //       explosion = GetComponents<AudioSource>()[1];
-      
+        explosioon = GetComponents<AudioSource>();
+        
     }
 
     // Update is called once per frame
@@ -23,26 +25,32 @@ public class bullet : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
        
-        AudioSource garsas;
+     
             if (script.ShotNotMiss)
             {
                 GameObject explosion = script.explosion;
                 Instantiate(script.explosion, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.Euler(60, 90, 0));
                 Instantiate(script.faieaa, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.Euler(60, 90, 0));
-                garsas = GetComponent<AudioSource>();
-                garsas.clip = script.explosionaudio;
-                garsas.Play();
+               
+            
+           AudioSource sound = other.gameObject.AddComponent<AudioSource>();
+            sound.clip = klipas;
+            sound.enabled = true;
+            sound.Play();
                 GameObject me = gameObject;
+
+            if (other.gameObject.GetComponent<Renderer>().material.color != Color.yellow)
                 other.gameObject.GetComponent<Renderer>().material.color = Color.black;
-                Destroy(me);
+            Destroy(me);
 
             }
             else
             {
-                garsas = GetComponent<AudioSource>();
-                garsas.clip = script.splash;
-                garsas.Play();
-                GameObject me = gameObject;
+            AudioSource sound = other.gameObject.AddComponent<AudioSource>();
+            sound.clip = splash;
+            sound.enabled = true;
+            sound.Play();
+            GameObject me = gameObject;
                 Destroy(me);
 
 

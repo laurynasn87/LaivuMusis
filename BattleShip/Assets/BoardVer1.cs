@@ -292,7 +292,6 @@ public class BoardVer1 : MonoBehaviour
         if (arpataike2(name))
         {
             pries.AiShot = true;
-            Debug.LogWarning("Slider value " + pries.lygis.value);
             if (pries.lygis.value == 2)
                 shot2lygis(name, x, y);
         }
@@ -352,22 +351,23 @@ public class BoardVer1 : MonoBehaviour
     }
     public void atimtigyvybe(string name)
     {
+        Debug.LogWarning(Laivai.Count+ "Count");
         if (Laivai.Count == 0) win();
-        for (int i = 0; i < Laivai.Count; i++)
+        foreach (Laivas laivelis in Laivai)
         {
-            if (Array.IndexOf(Laivai[i].Koordinates, name) > -1)
-                Laivai[i].pamusta++;
-            Debug.LogWarning(Laivai[i].pavadinimas + " " + Laivai[i].pamusta);
-            if (Laivai[i].pamusta >= Laivai[i].ilgis)
-            {
-                GameObject tile = Priesininkas.GetComponent<Priesininkas>().GetTileByString(name);
-                //  for (int k = 0; k < Laivai[i].Koordinates.Length; k++)
-                //    shotDown(tile);
+            int index = Array.IndexOf(laivelis.Koordinates, name);
+            if (index >= 0) laivelis.pamusta++;
 
-                Laivai.Remove(Laivai[i]);
+            if (laivelis.pamusta >= laivelis.ilgis)
+            {
+                foreach (String kord in laivelis.Koordinates)
+                {
+                    GetTileByString(kord).GetComponent<Renderer>().material.color = Color.yellow;
+                }
             }
 
         }
+
 
     }
     public void win()
@@ -440,7 +440,16 @@ public class BoardVer1 : MonoBehaviour
             return true;
         else return false;
     }
+    public GameObject GetTileByString(string name)
+    {
+        GameObject[] plteles = GameObject.FindGameObjectsWithTag("board");
+        foreach (GameObject tile in plteles)
+        {
+            if (tile.name.Equals(name)) return tile;
+        }
 
+        return null;
+    }
 }
 
 

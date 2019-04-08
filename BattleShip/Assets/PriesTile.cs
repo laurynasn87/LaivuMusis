@@ -23,17 +23,17 @@ public class PriesTile : MonoBehaviour
     private void OnMouseEnter()
     {
       //  Debug.LogWarning(gameObject.name);
-        if (GetComponent<Renderer>().material.color != Color.black && GetComponent<Renderer>().material.color != Color.blue)
+        if (GetComponent<Renderer>().material.color != Color.black && GetComponent<Renderer>().material.color != Color.blue && GetComponent<Renderer>().material.color != Color.yellow)
         GetComponent<Renderer>().material.color = Color.red;
     }
     private void OnMouseExit()
     {
-        if (GetComponent<Renderer>().material.color != Color.black && GetComponent<Renderer>().material.color != Color.blue)
+        if (GetComponent<Renderer>().material.color != Color.black && GetComponent<Renderer>().material.color != Color.blue && GetComponent<Renderer>().material.color != Color.yellow)
             GetComponent<Renderer>().material.color = Color.white;
     }
     private void OnMouseDown()
     {
-        if (GetComponent<Renderer>().material.color == Color.black || GetComponent<Renderer>().material.color == Color.blue) return;
+        if (GetComponent<Renderer>().material.color == Color.black || GetComponent<Renderer>().material.color == Color.blue || GetComponent<Renderer>().material.color == Color.yellow) return;
             if (script.ejimas)
         {
             string name;

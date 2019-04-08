@@ -221,8 +221,8 @@ public class Priesininkas : MonoBehaviour
             nuskaityta = true;
         }
 
-        //  try
-        //   {
+          try
+           {
 
       
             Scriptas.shootAI(DazniausiaiPataikomi[0]);
@@ -230,20 +230,20 @@ public class Priesininkas : MonoBehaviour
             DazniausiaiPataikomi.RemoveAt(0);
 
 
-     //   }
-     //   catch (Exception e)
-     //   {
-     //       Debug.LogWarning("Prisijungti Nepavyko prie duomenu bazes");
-     //       Debug.LogWarning(e);
-      //      if (lop < 20)
-     //       {
-     //           Debug.LogWarning("Bandoma vel");
-      //          lop++;
-       //         AI();
-       //         return;
-       //     }
-      //  }
-    //
+       }
+        catch (Exception e)
+        {
+            Debug.LogWarning("Prisijungti Nepavyko prie duomenu bazes");
+            Debug.LogWarning(e);
+            if (lop < 20)
+            {
+                Debug.LogWarning("Bandoma vel");
+              lop++;
+                AI();
+                return;
+           }
+        }
+    
 
     }
 
@@ -251,14 +251,21 @@ public class Priesininkas : MonoBehaviour
     public void atimtigyvybe(string name)
     {
         if (Laivai2.Count == 0) win();
-
+        Debug.LogWarning(Laivai2.Count);
         if (Laivai2.Count == 0) win();
         foreach (Laivas laivelis in Laivai2)
         {
             int index = Array.IndexOf(laivelis.Koordinates, name);
             if (index >= 0) laivelis.pamusta++;
 
-            if (laivelis.pamusta >= laivelis.ilgis) Debug.LogError("Pamustas pilnai " + laivelis.pavadinimas);
+            if (laivelis.pamusta >= laivelis.ilgis)
+            {
+                foreach (String kord in laivelis.Koordinates)
+                {
+                    GetTileByString(kord).GetComponent<Renderer>().material.color = Color.yellow;
+                }
+            }
+
         }
 
 
