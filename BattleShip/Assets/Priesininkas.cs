@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using SimpleJSON;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class Priesininkas : MonoBehaviour
 {
@@ -19,7 +20,9 @@ public class Priesininkas : MonoBehaviour
     public GameObject faieaa;
     public AudioClip splash;
     public AudioClip explosionaudio;
+    public Slider lygis;
     public Text ejimai;
+    public GameObject databaseconn;
     public Text pataikymai;
     bool nuskaityta = false;
     public List<Laivas> Laivai2 = new List<Laivas>();
@@ -27,16 +30,16 @@ public class Priesininkas : MonoBehaviour
     public bool AiShot = false;
     public bool AIeile = false;
     public List<String> visi = new List<string>();
-    public List<DataFromJson> DazniausiaiPataikomi = new List<DataFromJson>();
+    public List<String> DazniausiaiPataikomi = new List<String>();
     public bool ejimas = true;
-    public string AIKord;
+    public string AIKord = "";
     BoardVer1 Scriptas;
     GameObject wins;
+    public GameObject kubas;
     void Start()
     {
         Scriptas = MainBoard.gameObject.GetComponent<BoardVer1>();
-        StartCoroutine(Scriptas.GetComponent<BoardVer1>().GetCounterData());
-       wins =  GameObject.FindGameObjectWithTag("Finish");
+        wins = GameObject.FindGameObjectWithTag("Finish");
         wins.SetActive(false);
         int row = 1;
         int col = 1;
@@ -77,6 +80,7 @@ public class Priesininkas : MonoBehaviour
         RandomDidesniLaivai(3, Scriptas.korvete, 0, 0, 2);
         RandomDidesniLaivai(4, Scriptas.Sarvuotlaivis, 0, 0, 1);
 
+        if (AIKord.Equals("")) databaseconn.SetActive(true);
 
     }
 
@@ -158,6 +162,8 @@ public class Priesininkas : MonoBehaviour
     void Update()
     {
 
+        if (!AIKord.Equals("")) databaseconn.SetActive(false);
+
     }
     IEnumerator MoveKamera()
     {
@@ -191,20 +197,22 @@ public class Priesininkas : MonoBehaviour
 
         return null;
     }
-    public List<DataFromJson> Parser(String stringas)
+    public List<String> Parser(String stringas)
     {
-        List<DataFromJson> data = new List<DataFromJson>();
+        Debug.LogWarning(stringas);
+        List<String> data = new List<String>();
         String[] parse = stringas.Split(';');
 
         for (int i = 0; i < parse.Length - 1; i++)
         {
             String[] parsemore = parse[i].Split('|');
 
-            data.Add(new DataFromJson(parsemore[0], parsemore[1], parsemore[2]));
+            data.Add(parsemore[1]);
 
         }
         return data;
     }
+    int lop = 0;
     public void AI()
     {
         if (nuskaityta == false)
@@ -212,18 +220,30 @@ public class Priesininkas : MonoBehaviour
             DazniausiaiPataikomi = Parser(AIKord);
             nuskaityta = true;
         }
-        try
-        {
-            Scriptas.shootAI(DazniausiaiPataikomi[0].koordinates);
+
+        //  try
+        //   {
+
+      
+            Scriptas.shootAI(DazniausiaiPataikomi[0]);
+
             DazniausiaiPataikomi.RemoveAt(0);
 
 
-        }
-        catch (Exception e)
-        {
-            Debug.LogError("Prisijungti Nepavyko prie duomenu bazes");
-        }
-
+     //   }
+     //   catch (Exception e)
+     //   {
+     //       Debug.LogWarning("Prisijungti Nepavyko prie duomenu bazes");
+     //       Debug.LogWarning(e);
+      //      if (lop < 20)
+     //       {
+     //           Debug.LogWarning("Bandoma vel");
+      //          lop++;
+       //         AI();
+       //         return;
+       //     }
+      //  }
+    //
 
     }
 
@@ -231,6 +251,20 @@ public class Priesininkas : MonoBehaviour
     public void atimtigyvybe(string name)
     {
         if (Laivai2.Count == 0) win();
+
+        if (Laivai2.Count == 0) win();
+        foreach (Laivas laivelis in Laivai2)
+        {
+            int index = Array.IndexOf(laivelis.Koordinates, name);
+            if (index >= 0) laivelis.pamusta++;
+
+            if (laivelis.pamusta >= laivelis.ilgis) Debug.LogError("Pamustas pilnai " + laivelis.pavadinimas);
+        }
+
+
+
+
+        /*
         for (int i = 0; i < Laivai2.Count; i++)
         {
             if (Array.IndexOf(Laivai2[i].Koordinates, name) > -1)
@@ -245,7 +279,7 @@ public class Priesininkas : MonoBehaviour
                 Laivai2.Remove(Laivai2[i]);
             }
 
-        }
+        }*/
 
     }
     public void PridetiEjima()
@@ -296,5 +330,50 @@ public class Priesininkas : MonoBehaviour
             tile.GetComponent<Renderer>().material.color = Color.red;
         }
         tile.GetComponent<Renderer>().material.color = Color.black;
+    }
+    public void exit()
+    {
+        SceneManager.LoadScene("SampleScene");
+        /*
+                PriesininkoKamera.SetActive(false);
+                wipe(GameObject.FindGameObjectsWithTag("Laivai"));
+                Scriptas.Main.SetActive(false);
+                wipe(Scriptas.board);
+                wipe(board);
+                kubas.SetActive(true);
+                Scriptas.oldcanvas.GetComponent<Canvas>().enabled = true;
+                Scriptas.oldcanvas.SetActive(true);
+                MainBoard.SetActive(false);
+
+                this.gameObject.SetActive(false);
+                */
+    }
+    public void wipe(GameObject[,] arejus)
+    {
+        int w = arejus.GetLength(0); // width
+        int h = arejus.GetLength(1); // height
+
+        for (int x = 0; x < w; x = x + 10)
+        {
+            for (int y = 0; y < h; y = y + 10)
+            {
+                Destroy(arejus[x, y]);
+
+
+            }
+        }
+    }
+    public void wipe(GameObject[] arejus)
+    {
+        int w = arejus.Length; // width
+
+        for (int x = 0; x < w; x = x + 10)
+        {
+
+            Destroy(arejus[x]);
+
+
+
+        }
     }
 }

@@ -15,6 +15,7 @@ public class BoardVer1 : MonoBehaviour
     public GameObject BoardUnitPrefab;
     public GameObject mygtukasZaisti;
     //public int numSelectors = 10;
+    public GameObject oldcanvas;
     public GameObject[,] board;
     public GameObject Sarvuotlaivis;
     public GameObject korvete;
@@ -27,6 +28,7 @@ public class BoardVer1 : MonoBehaviour
     public GameObject Priesininkas;
     //public GameObject klonas;
     public Canvas ZadimoCanvas;
+    public GameObject Vardas;
     public bool pataike = false;
     string CreateInsert = "https://bastioned-public.000webhostapp.com/InsertStuff.php";
     string GetInfo = "https://bastioned-public.000webhostapp.com/GetStuff.php";
@@ -37,10 +39,10 @@ public class BoardVer1 : MonoBehaviour
     public void GenerateBoard()
     {
         board = null;
-        board = new GameObject[100, 100]; 
+        board = new GameObject[100, 100];
         int row = 1;
         int col = 1;
-       
+
         for (int i = 0; i < 10; i++)
         {
             for (int j = 0; j < 10; j++)
@@ -72,7 +74,7 @@ public class BoardVer1 : MonoBehaviour
         }
     }
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
         Main.SetActive(true);
         Main.transform.position = (new Vector3(Main.transform.position.x - 20, Main.transform.position.y, Main.transform.position.z));
@@ -80,7 +82,7 @@ public class BoardVer1 : MonoBehaviour
         //Transform mainkamera = Camera.main.transform;
         //boardd = new board[10];
         //board = new GameObject[10,10];
-    
+
 
     }
 
@@ -111,7 +113,7 @@ public class BoardVer1 : MonoBehaviour
         }
     }
 
-  public  GameObject GetObjectByCoordinates(RaycastHit hits)
+    public GameObject GetObjectByCoordinates(RaycastHit hits)
     {
         GameObject[] objektai;
         GameObject Atsakymas = null;
@@ -148,18 +150,19 @@ public class BoardVer1 : MonoBehaviour
         List<int> xy = new List<int>();
         int w = board.GetLength(0); // width
         int h = board.GetLength(1); // height
-
+        Debug.LogWarning("Gere1");
         for (int x = 0; x < w; x = x + 10)
         {
             for (int y = 0; y < h; y = y + 10)
             {
+                Debug.LogWarning("Gere2");
                 if (board[x, y].name.Equals(name))
                 {
                     xy.Add(x);
                     xy.Add(y);
                     return (xy);
                 }
-                   
+
 
             }
         }
@@ -192,18 +195,18 @@ public class BoardVer1 : MonoBehaviour
         Main.transform.rotation = Quaternion.Euler(90, 0, 0);
         Main.GetComponent<Camera>().rect = new Rect(new Vector2(0, 0.6f), new Vector2(0.2f, 0.4f));
         Main.gameObject.SetActive(false);
-         Priesininkas.SetActive(true);
-        
-       foreach (Laivas Lai in Laivai)
-       {
-         //   Debug.LogWarning(Lai.pavadinimas);
-         //   Debug.LogWarning(Lai.Koordinatess().Length);
+        Priesininkas.SetActive(true);
+        StartCoroutine(GetCounterData());
+        foreach (Laivas Lai in Laivai)
+        {
+            //   Debug.LogWarning(Lai.pavadinimas);
+            //   Debug.LogWarning(Lai.Koordinatess().Length);
             foreach (String index in Lai.Koordinates)
-           {
-             //  Debug.LogWarning(index);
+            {
+                //  Debug.LogWarning(index);
                 InsertStuff(index);
                 Counter(index);
-              //   Counter(index);
+                //   Counter(index);
             }
 
         }
@@ -216,7 +219,7 @@ public class BoardVer1 : MonoBehaviour
         WWW www = new WWW(CreateInsert, form);
     }
 
- public IEnumerator GetStuff()
+    public IEnumerator GetStuff()
     {
         UnityWebRequest www = UnityWebRequest.Get(GetInfo);
         yield return www.SendWebRequest();
@@ -228,8 +231,8 @@ public class BoardVer1 : MonoBehaviour
         else
         {
             Priesininkas.GetComponent<Priesininkas>().AIKord = www.downloadHandler.text;
-         
-            
+
+
 
         }
     }
@@ -241,7 +244,7 @@ public class BoardVer1 : MonoBehaviour
         WWW www = new WWW(url);
     }
 
-  public  IEnumerator GetCounterData()
+    public IEnumerator GetCounterData()
     {
         //WWW www = new WWW(CounterData);
 
@@ -266,32 +269,86 @@ public class BoardVer1 : MonoBehaviour
     public void shoot(string name)
     {
         Priesininkas pries = Priesininkas.GetComponent<Priesininkas>();
-        List<int>kord = index(name);
+        List<int> kord = index(name);
         int x = kord[0];
         int y = kord[1];
-      
+        Debug.LogWarning("Gere3");
         if (arpataike(name)) pries.ShotNotMiss = true;
         else pries.ShotNotMiss = false;
-        GameObject kulka = Instantiate(Priesininkas.GetComponent<Priesininkas>().bullet , new Vector3(166, 184, 32), Quaternion.Euler(60, -90, 0));
-        StartCoroutine(ProjectileMove(kulka.transform.position, Priesininkas.GetComponent<Priesininkas>().board[x,y].transform.position, kulka));
-      
+        GameObject kulka = Instantiate(Priesininkas.GetComponent<Priesininkas>().bullet, new Vector3(166, 184, 32), Quaternion.Euler(60, -90, 0));
+        StartCoroutine(ProjectileMove(kulka.transform.position, Priesininkas.GetComponent<Priesininkas>().board[x, y].transform.position, kulka));
+
     }
     public void shootAI(string name)
     {
-        
+
         Priesininkas pries = Priesininkas.GetComponent<Priesininkas>();
         pries.AIeile = true;
         List<int> kord = index(name);
         int x = kord[0];
         int y = kord[1];
         pries.AiShot = false;
-        Debug.LogWarning("Ar pataike i " + name);
-        if (arpataike2(name)) pries.AiShot = true;
-        Debug.LogWarning(pries.AiShot + " pataike a ne");
+        
+        if (arpataike2(name))
+        {
+            pries.AiShot = true;
+            Debug.LogWarning("Slider value " + pries.lygis.value);
+            if (pries.lygis.value == 2)
+                shot2lygis(name, x, y);
+        }
         GameObject kulka = Instantiate(Priesininkas.GetComponent<Priesininkas>().AIbullet, new Vector3(166, 184, 32), Quaternion.Euler(60, -90, 0));
         if (pries.AiShot) atimtigyvybe(name);
         StartCoroutine(ProjectileMove(kulka.transform.position, board[x, y].transform.position, kulka));
-        
+
+    }
+    void shot2lygis(String name, int x, int y)
+    {
+        Priesininkas data = Priesininkas.GetComponent<Priesininkas>();
+
+        if (x - 10 > 10)
+        {
+            Debug.LogWarning("I em here " + x + y + "Why not: " + board[x - 10, y].name);
+            if (data.DazniausiaiPataikomi.Contains(board[x - 10, y].name))
+            {
+                Debug.LogWarning("I em 2 " + x + y);
+                int index = data.DazniausiaiPataikomi.IndexOf(board[x - 10, y].name);
+                data.DazniausiaiPataikomi.RemoveAt(index);
+                data.DazniausiaiPataikomi.Insert(1, board[x - 10, y].name);
+            }
+
+        }
+        if (x + 10 < 110)
+        {
+            if (data.DazniausiaiPataikomi.Contains(board[x + 10, y].name))
+            {
+                int index = data.DazniausiaiPataikomi.IndexOf(board[x + 10, y].name);
+                data.DazniausiaiPataikomi.RemoveAt(index);
+                data.DazniausiaiPataikomi.Insert(1, board[x + 10, y].name);
+            }
+
+        }
+        if (y - 10 > 10)
+        {
+            if (data.DazniausiaiPataikomi.Contains(board[x, y - 10].name))
+            {
+                int index = data.DazniausiaiPataikomi.IndexOf(board[x, y - 10].name);
+                data.DazniausiaiPataikomi.RemoveAt(index);
+                data.DazniausiaiPataikomi.Insert(1, board[x, y - 10].name);
+            }
+
+        }
+
+        if (y + 10 < 110)
+        {
+            if (data.DazniausiaiPataikomi.Contains(board[x, y + 10].name))
+            {
+                int index = data.DazniausiaiPataikomi.IndexOf(board[x, y + 10].name);
+                data.DazniausiaiPataikomi.RemoveAt(index);
+                data.DazniausiaiPataikomi.Insert(1, board[x, y + 10].name);
+            }
+
+        }
+        data.DazniausiaiPataikomi.ForEach(index => Debug.Log("Visos koordinates: " + index));
     }
     public void atimtigyvybe(string name)
     {
@@ -304,7 +361,7 @@ public class BoardVer1 : MonoBehaviour
             if (Laivai[i].pamusta >= Laivai[i].ilgis)
             {
                 GameObject tile = Priesininkas.GetComponent<Priesininkas>().GetTileByString(name);
-              //  for (int k = 0; k < Laivai[i].Koordinates.Length; k++)
+                //  for (int k = 0; k < Laivai[i].Koordinates.Length; k++)
                 //    shotDown(tile);
 
                 Laivai.Remove(Laivai[i]);
@@ -344,22 +401,22 @@ public class BoardVer1 : MonoBehaviour
 
         foreach (Laivas laivas in Laivai)
         {
-    // Debug.LogWarning(laivas.Koordinates.Count);
-                if (laivas.Koordinates.Contains(name))
-                {
-                    pataike = true;
-                    return pataike;
-                }
-            
+            // Debug.LogWarning(laivas.Koordinates.Count);
+            if (laivas.Koordinates.Contains(name))
+            {
+                pataike = true;
+                return pataike;
+            }
+
 
         }
 
         return pataike;
     }
-    IEnumerator ProjectileMove( Vector3 oldpos, Vector3 newpos, GameObject bullet)
+    IEnumerator ProjectileMove(Vector3 oldpos, Vector3 newpos, GameObject bullet)
     {
 
-        
+
         float t = 0.0f;
         while (t < 1.0f)
         {
@@ -369,12 +426,21 @@ public class BoardVer1 : MonoBehaviour
                 bullet.transform.position = Vector3.Lerp(oldpos, newpos, t);
             }
             catch (MissingReferenceException e)
-            {  }
+            { }
             //  PriesininkoKamera.transform.rotation = Quaternion.Lerp(PriesininkoKamera.transform.rotation, new Quaternion(60, PriesininkoKamera.transform.rotation.y, PriesininkoKamera.transform.rotation.z, PriesininkoKamera.transform.rotation.w), t);
             yield return 0;
-            
+
         }
-        
+
     }
+
+    bool cointainsboard(string namme)
+    {
+        if (Priesininkas.GetComponent<Priesininkas>().DazniausiaiPataikomi.Contains(name))
+            return true;
+        else return false;
+    }
+
 }
+
 
