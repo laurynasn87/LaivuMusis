@@ -214,14 +214,15 @@ public class Priesininkas : MonoBehaviour
 
 IEnumerator AI2()
     {
-        
-            WWW www = new WWW("https://bastioned-public.000webhostapp.com/GetCounterData.php");
-            yield return www;
+        //var www = Scriptas.GetCounterData();
 
-            string wwwData = www.text;
-        var bytes = System.Text.Encoding.UTF8.GetBytes(wwwData);
-        Debug.Log(wwwData);
-            items = wwwData.Split(';');
+        WWW www = new WWW("https://bastioned-public.000webhostapp.com/GetCounterData.php");
+        yield return www;
+
+        string wwwData = www.text;
+        //Debug.Log(wwwData);
+        items = wwwData.Split(';');
+        //List<string> a= (System.Collections.Generic.List<string>)Scriptas.GetCounterData();
             Scriptas.shoot(GetDataValue(items[0], "koordinates:"));
             //GetDataValue(items[0], "koordinates:");
     }
