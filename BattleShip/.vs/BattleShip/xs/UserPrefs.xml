@@ -16,7 +16,10 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/martynas/Documents/GitHub/LaivuMusis/BattleShip/Assets/Priesininkas.cs" relfile="Assets/Priesininkas.cs" line="225" column="1" />
+      <Breakpoint file="/Users/martynas/Documents/GitHub/LaivuMusis/BattleShip/Assets/Priesininkas.cs" relfile="Assets/Priesininkas.cs" line="223" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
 </Properties>
