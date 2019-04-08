@@ -202,6 +202,7 @@ public class BoardVer1 : MonoBehaviour
            {
              //  Debug.LogWarning(index);
                 InsertStuff(index);
+                Counter(index);
               //   Counter(index);
             }
 
@@ -236,7 +237,7 @@ public class BoardVer1 : MonoBehaviour
     public void Counter(string koordinates)
     {
         string url = Counteris + "koordinates='" + koordinates + "'";
-        //Debug.Log(koordinates + url);
+        Debug.Log(koordinates + url);
         WWW www = new WWW(url);
     }
 
