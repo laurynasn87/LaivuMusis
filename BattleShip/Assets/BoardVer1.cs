@@ -194,17 +194,18 @@ public class BoardVer1 : MonoBehaviour
         Main.gameObject.SetActive(false);
          Priesininkas.SetActive(true);
         
-     //   foreach (Laivas Lai in Laivai)
-    //    {
-         //  
-         //   foreach (String index in Lai.Koordinates)
-         //   {
-               // Debug.LogWarning(index);
-                // InsertStuff(index);
-                //  Counter(index);
-          //  }
+       foreach (Laivas Lai in Laivai)
+       {
+         //   Debug.LogWarning(Lai.pavadinimas);
+         //   Debug.LogWarning(Lai.Koordinatess().Length);
+            foreach (String index in Lai.Koordinates)
+           {
+             //  Debug.LogWarning(index);
+                InsertStuff(index);
+              //   Counter(index);
+            }
 
-    //    }
+        }
     }
 
     public void InsertStuff(string koordinates)
@@ -267,24 +268,88 @@ public class BoardVer1 : MonoBehaviour
         List<int>kord = index(name);
         int x = kord[0];
         int y = kord[1];
-
+      
         if (arpataike(name)) pries.ShotNotMiss = true;
-GameObject kulka = Instantiate(Priesininkas.GetComponent<Priesininkas>().bullet , new Vector3(166, 184, 32), Quaternion.Euler(60, -90, 0));
-        StartCoroutine(ProjectileMove(kulka.transform.position, board[x,y].transform.position, kulka));
-        pries.ejimas = true;
+        else pries.ShotNotMiss = false;
+        GameObject kulka = Instantiate(Priesininkas.GetComponent<Priesininkas>().bullet , new Vector3(166, 184, 32), Quaternion.Euler(60, -90, 0));
+        StartCoroutine(ProjectileMove(kulka.transform.position, Priesininkas.GetComponent<Priesininkas>().board[x,y].transform.position, kulka));
+      
+    }
+    public void shootAI(string name)
+    {
+        
+        Priesininkas pries = Priesininkas.GetComponent<Priesininkas>();
+        pries.AIeile = true;
+        List<int> kord = index(name);
+        int x = kord[0];
+        int y = kord[1];
+        pries.AiShot = false;
+        Debug.LogWarning("Ar pataike i " + name);
+        if (arpataike2(name)) pries.AiShot = true;
+        Debug.LogWarning(pries.AiShot + " pataike a ne");
+        GameObject kulka = Instantiate(Priesininkas.GetComponent<Priesininkas>().AIbullet, new Vector3(166, 184, 32), Quaternion.Euler(60, -90, 0));
+        if (pries.AiShot) atimtigyvybe(name);
+        StartCoroutine(ProjectileMove(kulka.transform.position, board[x, y].transform.position, kulka));
+        
+    }
+    public void atimtigyvybe(string name)
+    {
+        if (Laivai.Count == 0) win();
+        for (int i = 0; i < Laivai.Count; i++)
+        {
+            if (Array.IndexOf(Laivai[i].Koordinates, name) > -1)
+                Laivai[i].pamusta++;
+            Debug.LogWarning(Laivai[i].pavadinimas + " " + Laivai[i].pamusta);
+            if (Laivai[i].pamusta >= Laivai[i].ilgis)
+            {
+                GameObject tile = Priesininkas.GetComponent<Priesininkas>().GetTileByString(name);
+              //  for (int k = 0; k < Laivai[i].Koordinates.Length; k++)
+                //    shotDown(tile);
+
+                Laivai.Remove(Laivai[i]);
+            }
+
+        }
+
+    }
+    public void win()
+    {
+        Priesininkas.GetComponent<Priesininkas>().win();
+    }
+    public void loose()
+    {
+        Priesininkas.GetComponent<Priesininkas>().win();
     }
     public bool arpataike(string name)
     {
         bool pataike = false;
 
-        foreach (Laivas laivas in Laivai)
+        foreach (Laivas laivas in Priesininkas.GetComponent<Priesininkas>().Laivai2)
         {
             foreach (String kord in laivas.Koordinates)
                 if (kord.Equals(name))
                 {
                     pataike = true;
-                    break;
+                    return pataike;
                 }
+
+        }
+
+        return pataike;
+    }
+    public bool arpataike2(string name)
+    {
+        bool pataike = false;
+
+        foreach (Laivas laivas in Laivai)
+        {
+    // Debug.LogWarning(laivas.Koordinates.Count);
+                if (laivas.Koordinates.Contains(name))
+                {
+                    pataike = true;
+                    return pataike;
+                }
+            
 
         }
 
@@ -303,12 +368,12 @@ GameObject kulka = Instantiate(Priesininkas.GetComponent<Priesininkas>().bullet 
                 bullet.transform.position = Vector3.Lerp(oldpos, newpos, t);
             }
             catch (MissingReferenceException e)
-            { }
+            {  }
             //  PriesininkoKamera.transform.rotation = Quaternion.Lerp(PriesininkoKamera.transform.rotation, new Quaternion(60, PriesininkoKamera.transform.rotation.y, PriesininkoKamera.transform.rotation.z, PriesininkoKamera.transform.rotation.w), t);
             yield return 0;
-
+            
         }
-
+        
     }
 }
 

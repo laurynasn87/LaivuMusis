@@ -9,9 +9,9 @@ public class Laivas
     public string pavadinimas;
     public bool vertical;
     public int pamusta = 0;
-    public List<String> Koordinates = new List<String>();
+    public String[] Koordinates;
 
-    public Laivas(int ilgis, string pavadinimas, List<String> Koordinates, bool vertical)
+    public Laivas(int ilgis, string pavadinimas, String[] Koordinates, bool vertical)
     {
         this.ilgis = ilgis;
         this.pavadinimas = pavadinimas;
@@ -27,7 +27,11 @@ public class Laivas
         return this.pavadinimas;
  
     }
-    
+    public String[] Koordinatess()
+    {
+        return this.Koordinates;
+
+    }
 
 
 }

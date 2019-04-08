@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class BoardUIVer1 : MonoBehaviour
 {
-    string CounterData = "https://bastioned-public.000webhostapp.com/GetCounterData.php";
+
 
     public Text lblBoardPosition;
 
@@ -48,7 +48,8 @@ public class BoardUIVer1 : MonoBehaviour
             Koordinates.Add(ibjektas.name);
             removetile(ibjektas);
         }
-        BoardVer1.Laivai.Add(new Laivas(Script.Length, Script.LaivoPavadinimas, Koordinates, Script.vertical));
+        String[] array = Koordinates.ToArray();
+        BoardVer1.Laivai.Add(new Laivas(Script.Length, Script.LaivoPavadinimas, array, Script.vertical));
         Text kiekis;
         switch (Script.Length)
         {
@@ -386,22 +387,26 @@ public class BoardUIVer1 : MonoBehaviour
             {
                 
                 koordin.ForEach(item => visi.Add(item));
-                koordin.ForEach(item => Debug.LogWarning(item));
+                // koordin.ForEach(item => Debug.LogWarning(item));
+                String[] array = koordin.ToArray();
                 if (vertical == 0)
                 {
+
                     LaivoPridejimas(koordin, laivas, Quaternion.Euler(0, 90, 0), paklaidax, 0);
-                    BoardVer1.Laivai.Add(new Laivas(ilgis, laivas.name, koordin, false));
+
+                    BoardVer1.Laivai.Add(new Laivas(ilgis, laivas.name, array, false));
                 }
                 else
                 {
                     LaivoPridejimas(koordin, laivas, Quaternion.identity, 0, paklaiday);
-                    BoardVer1.Laivai.Add(new Laivas(ilgis, laivas.name, koordin, true));
+                    BoardVer1.Laivai.Add(new Laivas(ilgis, laivas.name, array, true));
                 }
             }
             koordin.Clear();
         }
         pasibaige(ilgis.ToString());
-
+       // Debug.LogWarning("Laivai");
+      //  BoardVer1.Laivai.ForEach(item => Debug.LogWarning(item.Koordinates.Count));
     }
     void refresh()
     {

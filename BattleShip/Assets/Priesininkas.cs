@@ -14,23 +14,30 @@ public class Priesininkas : MonoBehaviour
     public GameObject PriesininkoKamera;
     public GameObject prefab;
     public GameObject bullet;
+    public GameObject AIbullet;
     public GameObject explosion;
     public GameObject faieaa;
     public AudioClip splash;
+    public AudioClip explosionaudio;
     public Text ejimai;
     public Text pataikymai;
+    bool nuskaityta = false;
     public List<Laivas> Laivai2 = new List<Laivas>();
     public bool ShotNotMiss = true;
-   public List<String> visi = new List<string>();
+    public bool AiShot = false;
+    public bool AIeile = false;
+    public List<String> visi = new List<string>();
+    public List<DataFromJson> DazniausiaiPataikomi = new List<DataFromJson>();
     public bool ejimas = true;
     public string AIKord;
     BoardVer1 Scriptas;
-    string CounterData = "https://bastioned-public.000webhostapp.com/GetCounterData.php";
+    GameObject wins;
     void Start()
     {
-         Scriptas = MainBoard.gameObject.GetComponent<BoardVer1>();
+        Scriptas = MainBoard.gameObject.GetComponent<BoardVer1>();
         StartCoroutine(Scriptas.GetComponent<BoardVer1>().GetCounterData());
-
+       wins =  GameObject.FindGameObjectWithTag("Finish");
+        wins.SetActive(false);
         int row = 1;
         int col = 1;
 
@@ -42,12 +49,12 @@ public class Priesininkas : MonoBehaviour
                 int kj = j * 10;
                 //for (int k = 0; k < numSelectors; k++)
                 //{
-                GameObject tmp = Instantiate(prefab, new Vector3(ki+1000, 0, kj), prefab.transform.rotation) as GameObject;
+                GameObject tmp = Instantiate(prefab, new Vector3(ki + 1000, 0, kj), prefab.transform.rotation) as GameObject;
                 //GameObject go = tmp;
                 PriesTile tmpUI = tmp.GetComponent<PriesTile>();
                 //Debug.Log(tmpUI);
                 string name = string.Format("B1:[{0:00},{1:00}]", row, col);
-                
+
                 tmpUI.col = kj;
                 tmpUI.row = ki;
                 //Debug.Log(name);
@@ -64,105 +71,93 @@ public class Priesininkas : MonoBehaviour
             row++;
         }
         StartCoroutine(MoveKamera());
-       
+
         RandomDidesniLaivai(1, Scriptas.frigata, 0, 0, 4);
         RandomDidesniLaivai(2, Scriptas.minininkas, 0, 0, 3);
         RandomDidesniLaivai(3, Scriptas.korvete, 0, 0, 2);
         RandomDidesniLaivai(4, Scriptas.Sarvuotlaivis, 0, 0, 1);
+
+
     }
-    
-     void RandomDidesniLaivai(int ilgis, GameObject laivas, int paklaidax, int paklaiday, int kiekis)
+
+    void RandomDidesniLaivai(int ilgis, GameObject laivas, int paklaidax, int paklaiday, int kiekis)
+    {
+        System.Random rnd = new System.Random();
+        List<String> koordin = new List<string>();
+        for (int i = 0; i < kiekis; i++)
         {
-            System.Random rnd = new System.Random();
-            List<String> koordin = new List<string>();
-            for (int i = 0; i < kiekis; i++)
-            {
-                bool uzimta = false;
-                string xstring;
-                string ystring;
+            bool uzimta = false;
+            string xstring;
+            string ystring;
 
-                int x = rnd.Next(1, 11);
-                int y = rnd.Next(1, 11);
-                int vertical = rnd.Next(0, 2);
+            int x = rnd.Next(1, 11);
+            int y = rnd.Next(1, 11);
+            int vertical = rnd.Next(0, 2);
 
-                if (vertical == 0)
-                    while (x > 10 - ilgis)
-                        x--;
-                else
-                    while (y > 10 - ilgis)
-                        y--;
-                if (vertical == 0)
-                    for (int e = x; e < x + ilgis; e++)
-                    {
-                        if (e < 10) xstring = "0" + e;
-                        else xstring = e.ToString();
-                        if (y < 10) ystring = "0" + y;
-                        else ystring = y.ToString();
+            if (vertical == 0)
+                while (x > 10 - ilgis)
+                    x--;
+            else
+                while (y > 10 - ilgis)
+                    y--;
+            if (vertical == 0)
+                for (int e = x; e < x + ilgis; e++)
+                {
+                    if (e < 10) xstring = "0" + e;
+                    else xstring = e.ToString();
+                    if (y < 10) ystring = "0" + y;
+                    else ystring = y.ToString();
                     if (koordin.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
                     koordin.Add("B1:[" + xstring + "," + ystring + "]");
-                        if (visi.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
-                    }
-                else
-                    for (int e = y; e < y + ilgis; e++)
-                    {
-                        if (x < 10) xstring = "0" + x;
-                        else xstring = x.ToString();
-                        if (e < 10) ystring = "0" + e;
-                        else ystring = e.ToString();
+                    if (visi.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
+                }
+            else
+                for (int e = y; e < y + ilgis; e++)
+                {
+                    if (x < 10) xstring = "0" + x;
+                    else xstring = x.ToString();
+                    if (e < 10) ystring = "0" + e;
+                    else ystring = e.ToString();
                     if (koordin.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
                     koordin.Add("B1:[" + xstring + "," + ystring + "]");
-                        if (visi.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
-                   
+                    if (visi.Contains("B1:[" + xstring + "," + ystring + "]")) uzimta = true;
+
                 }
 
             if (uzimta)
-                {
+            {
                 koordin.Clear();
                 i--;
-                    continue;
-               
+                continue;
+
             }
-                else
+            else
+            {
+
+                koordin.ForEach(item => visi.Add(item));
+                String[] array = koordin.ToArray();
+                // cia zjb kording
+                if (vertical == 0)
                 {
 
-                    koordin.ForEach(item => visi.Add(item));
-                    if (vertical == 0)
-                    {
-                    PlaceShip(koordin, paklaidax, 0);
-                       Laivai2.Add(new Laivas(ilgis, laivas.name, koordin, false));
-                    }
-                    else
-                    {
-                    PlaceShip(koordin, 0, paklaiday);
-                        Laivai2.Add(new Laivas(ilgis, laivas.name, koordin, true));
-                    }
+                    Laivai2.Add(new Laivas(ilgis, laivas.name, array, false));
+
                 }
-                koordin.Clear();
+                else
+                {
+                    Laivai2.Add(new Laivas(ilgis, laivas.name, array, true));
+                }
             }
-
+            koordin.Clear();
         }
 
-    public void PlaceShip(List<String> Koordinates, int paklaidax, int paklaiday)
-    {
-       
-
-        foreach (String cord in Koordinates)
-        {
-
-            GameObject Tile = GetTileByString(cord);
-            if (Tile != null)
-            {
-                // Tile.GetComponent<Renderer>().material.color = Color.red;
-
-            }
-         
-        }
 
     }
+
     // Update is called once per frame
     void Update()
     {
-        
+
     }
     IEnumerator MoveKamera()
     {
@@ -174,16 +169,16 @@ public class Priesininkas : MonoBehaviour
             t += Time.deltaTime * (Time.timeScale / 1.3f);
 
             PriesininkoKamera.transform.position = Vector3.Lerp(oldpos, new Vector3(1028, 98, -27), t);
-           
+
             //  PriesininkoKamera.transform.rotation = Quaternion.Lerp(PriesininkoKamera.transform.rotation, new Quaternion(60, PriesininkoKamera.transform.rotation.y, PriesininkoKamera.transform.rotation.z, PriesininkoKamera.transform.rotation.w), t);
             yield return 0;
-            
+
         }
         PriesininkoKamera.transform.rotation = Quaternion.Euler(60, 0, 0);
         Camera Kamera = PriesininkoKamera.GetComponent<Camera>();
         Kamera.rect = new Rect(new Vector2(0.2f, 0), new Vector2(0.8f, 1));
         Scriptas.Main.SetActive(true);
-        
+
 
     }
     public GameObject GetTileByString(string name)
@@ -196,66 +191,62 @@ public class Priesininkas : MonoBehaviour
 
         return null;
     }
+    public List<DataFromJson> Parser(String stringas)
+    {
+        List<DataFromJson> data = new List<DataFromJson>();
+        String[] parse = stringas.Split(';');
+
+        for (int i = 0; i < parse.Length - 1; i++)
+        {
+            String[] parsemore = parse[i].Split('|');
+
+            data.Add(new DataFromJson(parsemore[0], parsemore[1], parsemore[2]));
+
+        }
+        return data;
+    }
     public void AI()
-    {// AI kord == json string
-     //   Debug.LogError(AIKord);
-     /*DataFromJson[] player = JsonHelper.FromJson<DataFromJson>(AIKord);
-     for (int i = 0; i < player.Length; i++)
-          Debug.LogWarning(player[i].koordinates);
-
-     Scriptas.shoot("B1:[03,06]");// cia reikia paduoti koordinate i kuria saus */
-
-        //WWW www = new WWW(CounterData);
-       
-
-    }
-
-    public string[] items;
-
-IEnumerator AI2()
     {
-        
-            WWW www = new WWW("https://bastioned-public.000webhostapp.com/GetCounterData.php");
-            yield return www;
+        if (nuskaityta == false)
+        {
+            DazniausiaiPataikomi = Parser(AIKord);
+            nuskaityta = true;
+        }
+        try
+        {
+            Scriptas.shootAI(DazniausiaiPataikomi[0].koordinates);
+            DazniausiaiPataikomi.RemoveAt(0);
 
-            string wwwData = www.text;
-        var bytes = System.Text.Encoding.UTF8.GetBytes(wwwData);
-        Debug.Log(wwwData);
-            items = wwwData.Split(';');
-            Scriptas.shoot(GetDataValue(items[0], "koordinates:"));
-            //GetDataValue(items[0], "koordinates:");
+
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Prisijungti Nepavyko prie duomenu bazes");
+        }
+
+
     }
 
-    public string GetDataValue(string data, string index)
-    {
-        string value = data.Substring(data.IndexOf(index) + index.Length);
-        value = value.Remove(value.IndexOf("|"));
-        //Scriptas.shoot(value);
-        return value;
-    }
 
     public void atimtigyvybe(string name)
     {
-        Debug.LogWarning(Laivai2.Capacity);
-        foreach (Laivas laivai in Laivai2)
+        if (Laivai2.Count == 0) win();
+        for (int i = 0; i < Laivai2.Count; i++)
         {
-            Debug.LogWarning(laivai.Koordinates.Count);
-            if (laivai.Koordinates.Contains(name))
+            if (Array.IndexOf(Laivai2[i].Koordinates, name) > -1)
+                Laivai2[i].pamusta++;
+            Debug.LogWarning(Laivai2[i].pavadinimas + " " + Laivai2[i].pamusta);
+            if (Laivai2[i].pamusta >= Laivai2[i].ilgis)
             {
-                laivai.pamusta++;
-                Debug.LogWarning("Pamustas " + laivai.pavadinimas );
-            }
-            if (laivai.pamusta>=laivai.ilgis)
-            {
-                for (int i =0; i<laivai.ilgis; i++)
-                {
+                GameObject tile = GetTileByString(name);
+                for (int k = 0; k < Laivai2[i].Koordinates.Length; k++)
+                    shotDown(tile);
 
-                    GameObject tile = GetTileByString(laivai.Koordinates[i]);
-                    Instantiate(explosion, new Vector3(tile.transform.position.x, tile.transform.position.y, tile.transform.position.z), Quaternion.Euler(60, 90, 0));
-                }
-                
+                Laivai2.Remove(Laivai2[i]);
             }
+
         }
+
     }
     public void PridetiEjima()
     {
@@ -265,32 +256,45 @@ IEnumerator AI2()
     {
         pataikymai.text = (int.Parse(pataikymai.text) + 1).ToString();
     }
-}
-public static class JsonHelper
-{
-    public static T[] FromJson<T>(string json)
+    GameObject getlaivasbyilgis(int id)
     {
-        Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(json);
-        return wrapper.Items;
+        switch (id)
+        {
+            case 1:
+                return Scriptas.frigata;
+                break;
+            case 2:
+                return Scriptas.korvete;
+                break;
+            case 3:
+                return Scriptas.minininkas;
+            case 4:
+                return Scriptas.Sarvuotlaivis;
+
+        }
+        return null;
+
     }
 
-    public static string ToJson<T>(T[] array)
+    public void win()
     {
-        Wrapper<T> wrapper = new Wrapper<T>();
-        wrapper.Items = array;
-        return JsonUtility.ToJson(wrapper);
+        wins.SetActive(true);
     }
-
-    public static string ToJson<T>(T[] array, bool prettyPrint)
+    public void loose()
     {
-        Wrapper<T> wrapper = new Wrapper<T>();
-        wrapper.Items = array;
-        return JsonUtility.ToJson(wrapper, prettyPrint);
+        wins.SetActive(true);
     }
-
-    [Serializable]
-    private class Wrapper<T>
+    IEnumerator shotDown(GameObject tile)
     {
-        public T[] Items;
+
+        float t = 0.0f;
+        while (t < 1.0f)
+        {
+            t += Time.deltaTime * (Time.timeScale / 2);
+            tile.GetComponent<Renderer>().material.color = Color.yellow;
+            yield return 0;
+            tile.GetComponent<Renderer>().material.color = Color.red;
+        }
+        tile.GetComponent<Renderer>().material.color = Color.black;
     }
 }
