@@ -15,6 +15,7 @@ TagManager:
   - Fire
   - Laivai
   - board2
+  - Ranking
   layers:
   - Default
   - TransparentFX

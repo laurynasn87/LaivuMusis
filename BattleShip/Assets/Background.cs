@@ -1,15 +1,23 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using UnityEngine;
+using UnityEngine.Experimental.UIElements;
+using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class Background : MonoBehaviour
 {
+    public GameObject ranking;
+    GameObject[] reitingai;
     public GameObject Nerinterneto;
     // Start is called before the first frame update
     void Start()
     {
+        reitingai = GameObject.FindGameObjectsWithTag("Ranking");
+        ranking.SetActive(false);
         if (!IsConnected()) Nerinterneto.SetActive(true);
     }
 
@@ -69,5 +77,64 @@ public class Background : MonoBehaviour
             return "";
         }
         return html;
+    }
+    public void GeriausiuLentele()
+    {
+        ranking.SetActive(!ranking.active);
+        if (ranking.active == true) StartCoroutine(makelist());
+        foreach (GameObject reitingas in reitingai)
+        {
+            reitingas.SetActive(!reitingas.active);
+        }
+    }
+    public IEnumerator makelist()
+    {
+    
+        //WWW www = new WWW(CounterData);
+
+        UnityWebRequest www = UnityWebRequest.Get("https://bastioned-public.000webhostapp.com/GetScore.php?fbclid=IwAR3gWa6551RsQNc-wvbc4rpyM31kNX7nXodpiKSi086dnIsooD0YR_iELoo");
+        yield return www.SendWebRequest();
+
+        if (www.isNetworkError || www.isHttpError)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            string uzimtaVieta = www.downloadHandler.text;
+           List<String> parsed =  Parser(uzimtaVieta);
+            for (int ix=0; ix<parsed.Count; ix++)
+            {
+                Text tekstukas = reitingai[ix].GetComponent<Text>();
+                tekstukas.text = parsed[ix];
+                reitingai[ix].SetActive(true);
+            }
+        }
+    }
+    public List<String> Parser(String stringas)
+    {
+        // Debug.LogWarning(stringas);
+        List<String> data = new List<String>();
+        String[] parse = stringas.Split(';');
+
+        for (int i = 0; i < parse.Length - 1; i++)
+        {
+            String[] parsemore = parse[i].Split('|');
+
+            data.Add(parsemore[0]);
+            data.Add(parsemore[1]);
+            data.Add(parsemore[2]);
+        }
+        return data;
+    }
+    public void exit()
+    {
+        Application.Quit();
+
+    }
+    public void mainmeniu()
+    {
+        Application.LoadLevel(Application.loadedLevel);
+
     }
 }
