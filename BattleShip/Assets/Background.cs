@@ -33,7 +33,7 @@ public class Background : MonoBehaviour
             else
                 return true;
         }
-        catch (IOException ex)
+        catch 
         {
             return false;
         }

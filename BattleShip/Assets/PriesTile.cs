@@ -88,7 +88,7 @@ public class PriesTile : MonoBehaviour
             {
                 bullet.transform.position = Vector3.Lerp(oldpos, new Vector3(transform.position.x, transform.position.y, transform.position.z), t);
             }
-            catch(MissingReferenceException e)
+            catch
             { }
             //  PriesininkoKamera.transform.rotation = Quaternion.Lerp(PriesininkoKamera.transform.rotation, new Quaternion(60, PriesininkoKamera.transform.rotation.y, PriesininkoKamera.transform.rotation.z, PriesininkoKamera.transform.rotation.w), t);
             yield return 0;

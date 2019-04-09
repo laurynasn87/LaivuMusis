@@ -57,7 +57,7 @@ public class BulletAi : MonoBehaviour
             }
             catch
             {
-                other.gameObject.AddComponent<Renderer>().material.color = Color.blue;
+               // other.gameObject.AddComponent<Renderer>().material.color = Color.blue;
             }
             garsas = GetComponent<AudioSource>();
             garsas.clip = script.splash;

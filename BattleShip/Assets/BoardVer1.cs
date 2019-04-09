@@ -28,7 +28,7 @@ public class BoardVer1 : MonoBehaviour
     public GameObject Priesininkas;
     //public GameObject klonas;
     public Canvas ZadimoCanvas;
-    public GameObject Vardas;
+    public InputField Vardas;
     public bool pataike = false;
     string CreateInsert = "https://bastioned-public.000webhostapp.com/InsertStuff.php";
     string GetInfo = "https://bastioned-public.000webhostapp.com/GetStuff.php";
@@ -150,12 +150,12 @@ public class BoardVer1 : MonoBehaviour
         List<int> xy = new List<int>();
         int w = board.GetLength(0); // width
         int h = board.GetLength(1); // height
-        Debug.LogWarning("Gere1");
+        
         for (int x = 0; x < w; x = x + 10)
         {
             for (int y = 0; y < h; y = y + 10)
             {
-                Debug.LogWarning("Gere2");
+               
                 if (board[x, y].name.Equals(name))
                 {
                     xy.Add(x);
@@ -272,7 +272,7 @@ public class BoardVer1 : MonoBehaviour
         List<int> kord = index(name);
         int x = kord[0];
         int y = kord[1];
-        Debug.LogWarning("Gere3");
+       
         if (arpataike(name)) pries.ShotNotMiss = true;
         else pries.ShotNotMiss = false;
         GameObject kulka = Instantiate(Priesininkas.GetComponent<Priesininkas>().bullet, new Vector3(166, 184, 32), Quaternion.Euler(60, -90, 0));
@@ -364,6 +364,7 @@ public class BoardVer1 : MonoBehaviour
                 {
                     GetTileByString(kord).GetComponent<Renderer>().material.color = Color.yellow;
                 }
+                Laivai.Remove(laivelis);
             }
 
         }
@@ -425,7 +426,7 @@ public class BoardVer1 : MonoBehaviour
             {
                 bullet.transform.position = Vector3.Lerp(oldpos, newpos, t);
             }
-            catch (MissingReferenceException e)
+            catch 
             { }
             //  PriesininkoKamera.transform.rotation = Quaternion.Lerp(PriesininkoKamera.transform.rotation, new Quaternion(60, PriesininkoKamera.transform.rotation.y, PriesininkoKamera.transform.rotation.z, PriesininkoKamera.transform.rotation.w), t);
             yield return 0;

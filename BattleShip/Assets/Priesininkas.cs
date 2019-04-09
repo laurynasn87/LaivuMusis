@@ -199,7 +199,7 @@ public class Priesininkas : MonoBehaviour
     }
     public List<String> Parser(String stringas)
     {
-        Debug.LogWarning(stringas);
+       // Debug.LogWarning(stringas);
         List<String> data = new List<String>();
         String[] parse = stringas.Split(';');
 
@@ -242,7 +242,14 @@ public class Priesininkas : MonoBehaviour
                 AI();
                 return;
            }
-        }
+            if (lop == 21)
+            {
+                AIKord = "88|B1:[09,08]|33;37|B1:[04,07]|31;68|B1:[07,08]|30;62|B1:[07,02]|29;74|B1:[08,04]|28;25|B1:[03,05]|28;69|B1:[07,09]|28;48|B1:[05,08]|26;89|B1:[09,09]|26;35|B1:[04,05]|26;49|B1:[05,09]|25;57|B1:[06,07]|25;75|B1:[08,05]|24;64|B1:[07,04]|24;67|B1:[07,07]|24;78|B1:[08,08]|23;9|B1:[01,09]|23;47|B1:[05,07]|23;36|B1:[04,06]|23;39|B1:[04,09]|22;7|B1:[01,07]|22;27|B1:[03,07]|21;38|B1:[04,08]|21;72|B1:[08,02]|21;79|B1:[08,09]|21;80|B1:[08,10]|21;84|B1:[09,04]|21;77|B1:[08,07]|20;76|B1:[08,06]|20;85|B1:[09,05]|20;42|B1:[05,02]|20;55|B1:[06,05]|20;29|B1:[03,09]|20;28|B1:[03,08]|20;23|B1:[03,03]|20;45|B1:[05,05]|19;90|B1:[09,10]|19;59|B1:[06,09]|19;65|B1:[07,05]|19;52|B1:[06,02]|19;56|B1:[06,06]|19;63|B1:[07,03]|19;26|B1:[03,06]|19;15|B1:[02,05]|19;17|B1:[02,07]|19;18|B1:[02,08]|19;58|B1:[06,08]|18;87|B1:[09,07]|18;86|B1:[09,06]|18;8|B1:[01,08]|18;19|B1:[02,09]|18;34|B1:[04,04]|18;98|B1:[10,08]|18;73|B1:[08,03]|18;24|B1:[03,04]|18;43|B1:[05,03]|17;33|B1:[04,03]|17;54|B1:[06,04]|17;31|B1:[04,01]|17;12|B1:[02,02]|16;53|B1:[06,03]|15;16|B1:[02,06]|15;41|B1:[05,01]|15;5|B1:[01,05]|14;82|B1:[09,02]|14;46|B1:[05,06]|14;4|B1:[01,04]|14;66|B1:[07,06]|14;13|B1:[02,03]|14;61|B1:[07,01]|14;95|B1:[10,05]|14;97|B1:[10,07]|13;2|B1:[01,02]|13;96|B1:[10,06]|13;99|B1:[10,09]|13;22|B1:[03,02]|13;1|B1:[01,01]|13;32|B1:[04,02]|12;94|B1:[10,04]|12;81|B1:[09,01]|12;14|B1:[02,04]|11;21|B1:[03,01]|11;71|B1:[08,01]|11;70|B1:[07,10]|10;83|B1:[09,03]|9;44|B1:[05,04]|9;92|B1:[10,02]|9;60|B1:[06,10]|9;6|B1:[01,06]|9;40|B1:[04,10]|8;51|B1:[06,01]|8;93|B1:[10,03]|8;11|B1:[02,01]|8;3|B1:[01,03]|7;30|B1:[03,10]|7;50|B1:[05,10]|6;10|B1:[01,10]|6;20|B1:[02,10]|6;91|B1:[10,01]|4;100|B1:[10,10]|0;";
+                lop++;
+                AI();
+                return;
+            }
+            }
     
 
     }
@@ -250,7 +257,8 @@ public class Priesininkas : MonoBehaviour
 
     public void atimtigyvybe(string name)
     {
-        if (Laivai2.Count == 0) win();
+        int kelinta = -1;
+        
         Debug.LogWarning(Laivai2.Count);
         if (Laivai2.Count == 0) win();
         foreach (Laivas laivelis in Laivai2)
@@ -263,10 +271,16 @@ public class Priesininkas : MonoBehaviour
                 foreach (String kord in laivelis.Koordinates)
                 {
                     GetTileByString(kord).GetComponent<Renderer>().material.color = Color.yellow;
+                    GameObject tiles= GetTileByString(kord);
+                    //Instantiate(explosion, tiles.transform.position, Quaternion.Euler(60, 90, 0));
                 }
+                kelinta = Laivai2.IndexOf(laivelis);
+              //  Laivai2.Remove(laivelis);
             }
-
         }
+       if (kelinta>-1) Laivai2.RemoveAt(kelinta);
+        if (Laivai2.Count == 0) win();
+
 
 
 
@@ -303,10 +317,10 @@ public class Priesininkas : MonoBehaviour
         {
             case 1:
                 return Scriptas.frigata;
-                break;
+                
             case 2:
                 return Scriptas.korvete;
-                break;
+               
             case 3:
                 return Scriptas.minininkas;
             case 4:
@@ -319,11 +333,26 @@ public class Priesininkas : MonoBehaviour
 
     public void win()
     {
+        int ejimukiekis = int.Parse(ejimai.text);
+        int suvis =  int.Parse(pataikymai.text);
+        String name = Scriptas.Vardas.text;
+        if (name.Equals("")) name = "Žaidėjas1";
         wins.SetActive(true);
+        //Cia paduoti i serva kiek suviu prireike i duombaze kaip score ir name
+        //
+       Text[] baiges = wins.GetComponentsInChildren<Text>();
+        baiges[1].text = "Jums Prireikė: " + ejimai.text + " ėjimų";
+        baiges[2].text = "Jums Prireikė: " + pataikymai.text + " šuvių";
+        baiges[3].text = "Jus užemat: " + getvieta(suvis,name) + " vietą";
     }
     public void loose()
     {
         wins.SetActive(true);
+    }
+    public string getvieta(int suviai, String name)
+    {
+        // Cia padaryk kad gražintu užemama vieta
+        return "0";
     }
     IEnumerator shotDown(GameObject tile)
     {
