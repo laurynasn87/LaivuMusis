@@ -36,6 +36,8 @@ public class Priesininkas : MonoBehaviour
     BoardVer1 Scriptas;
     GameObject wins;
     public GameObject kubas;
+    string laimejimas = "https://bastioned-public.000webhostapp.com/Score.php?";
+    string vieta = "https://bastioned-public.000webhostapp.com/GetUserScore.php?";
     void Start()
     {
         Scriptas = MainBoard.gameObject.GetComponent<BoardVer1>();
@@ -340,19 +342,35 @@ public class Priesininkas : MonoBehaviour
         wins.SetActive(true);
         //Cia paduoti i serva kiek suviu prireike i duombaze kaip score ir name
         //
-       Text[] baiges = wins.GetComponentsInChildren<Text>();
+
+        string url = laimejimas + "username='" + name + "'&score" + suvis;
+        Debug.Log(url);
+        WWW www = new WWW(url);
+
+        Text[] baiges = wins.GetComponentsInChildren<Text>();
         baiges[1].text = "Jums Prireikė: " + ejimai.text + " ėjimų";
         baiges[2].text = "Jums Prireikė: " + pataikymai.text + " šuvių";
-        baiges[3].text = "Jus užemat: " + getvieta(suvis,name) + " vietą";
+        baiges[3].text = "Jus užemat: " + getvieta() + " vietą";
     }
     public void loose()
     {
         wins.SetActive(true);
     }
-    public string getvieta(int suviai, String name)
+    public IEnumerator getvieta()
     {
-        // Cia padaryk kad gražintu užemama vieta
-        return "0";
+        //WWW www = new WWW(CounterData);
+
+        UnityWebRequest www = UnityWebRequest.Get(vieta);
+        yield return www.SendWebRequest();
+
+        if (www.isNetworkError || www.isHttpError)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            string uzimtaVieta = www.downloadHandler.text;
+        }
     }
     IEnumerator shotDown(GameObject tile)
     {
