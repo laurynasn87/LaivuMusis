@@ -24,6 +24,7 @@ public class Priesininkas : MonoBehaviour
     public Text ejimai;
     public GameObject databaseconn;
     public Text pataikymai;
+    public Text WinorLose;
     bool nuskaityta = false;
     public List<Laivas> Laivai2 = new List<Laivas>();
     public bool ShotNotMiss = true;
@@ -260,7 +261,7 @@ public class Priesininkas : MonoBehaviour
     {
         int kelinta = -1;
         
-        Debug.LogWarning(Laivai2.Count);
+      //  Debug.LogWarning(Laivai2.Count);
         if (Laivai2.Count == 0) win();
         foreach (Laivas laivelis in Laivai2)
         {
@@ -306,11 +307,21 @@ public class Priesininkas : MonoBehaviour
     }
     public void PridetiEjima()
     {
-        ejimai.text = (int.Parse(ejimai.text) + 1).ToString();
+        try
+        {
+            ejimai.text = (int.Parse(ejimai.text) + 1).ToString();
+        }
+        catch
+        { }
     }
     public void PridetPataikyma()
     {
-        pataikymai.text = (int.Parse(pataikymai.text) + 1).ToString();
+        try
+        {
+            pataikymai.text = (int.Parse(pataikymai.text) + 1).ToString();
+        }
+        catch
+        { }
     }
     GameObject getlaivasbyilgis(int id)
     {
@@ -337,30 +348,29 @@ public class Priesininkas : MonoBehaviour
         int ejimukiekis = int.Parse(ejimai.text);
         int suvis =  int.Parse(pataikymai.text)+1;
         String name = Scriptas.Vardas.text;
-        if (name.Equals("")) name = "Žaidėjas1";
+        WinorLose.text = "Jūs Laimėjote!!";
+        if (name.Equals("") || name.Equals(" ")) name = "Žaidėjas1";
         wins.SetActive(true);
         //Cia paduoti i serva kiek suviu prireike i duombaze kaip score ir name
         //
 
-        string url = laimejimas + "username='" + name + "'&score" + suvis;
-        Debug.Log(url);
-        WWW www = new WWW(url);
-
-        Text[] baiges = wins.GetComponentsInChildren<Text>();
-        baiges[1].text = "Jums Prireikė: " + ejimai.text + " ėjimų";
-        baiges[2].text = "Jums Prireikė: " + suvis + " šuvių";
-      //  baiges[3].text = "Jus užemat: " + getvieta() + " vietą";
-        StartCoroutine(getvieta(baiges[3]));
+        StartCoroutine(insert(name, ejimukiekis.ToString()));
+ 
+        
     }
     public void loose()
     {
         wins.SetActive(true);
+        WinorLose.text = "Jūs Pralaimėjote";
+        ejimai.text = "";
+        pataikymai.text = "";
+        ejimai.enabled = false;
+        pataikymai.enabled = false;
     }
-    public IEnumerator getvieta(Text uzimta)
+    IEnumerator getvieta(string vardas, Text uzimta)
     {
-        //WWW www = new WWW(CounterData);
-
-        UnityWebRequest www = UnityWebRequest.Get(vieta);
+        string url = vieta + vardas + "'";
+        UnityWebRequest www = UnityWebRequest.Get(url);
         yield return www.SendWebRequest();
 
         if (www.isNetworkError || www.isHttpError)
@@ -369,8 +379,31 @@ public class Priesininkas : MonoBehaviour
         }
         else
         {
-            string uzimtaVieta = www.downloadHandler.text;
-            uzimta.text = "Jus užemat: " + uzimtaVieta + " vietą";
+          //  Debug.Log(www.downloadHandler.data); // this log is returning the requested data. 
+            string a = www.downloadHandler.text;
+          //  Debug.Log(www.downloadHandler.text);
+            uzimta.text = "Jus užemat: " + a + " vietą";
+        }
+    }
+    IEnumerator insert(string vardas, string suviu)
+    {
+        string url = laimejimas + "username='" + vardas + "'&score='" + suviu + "'";
+        UnityWebRequest www = UnityWebRequest.Get(url);
+        yield return www.SendWebRequest();
+
+        if (www.isNetworkError || www.isHttpError)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            
+            Text[] baiges = wins.GetComponentsInChildren<Text>();
+            StartCoroutine(cout(suviu, vardas,baiges[3]));
+            baiges[1].text = "Jums Prireikė: " + ejimai.text + " ėjimų";
+            baiges[2].text = "Jums Prireikė: " + suviu + " šuvių";
+            //  baiges[3].text = "Jus užemat: " + getvieta() + " vietą";
+        //    StartCoroutine(getvieta(name, baiges[3]));
         }
     }
     IEnumerator shotDown(GameObject tile)
@@ -435,6 +468,35 @@ public class Priesininkas : MonoBehaviour
     {
         AIKord = "Nera";
     }
-   
+
+    public IEnumerator cout(string score, string name, Text teksats)
+    {
+
+        //WWW www = new WWW(CounterData);
+
+        UnityWebRequest www = UnityWebRequest.Get("https://bastioned-public.000webhostapp.com/GetScore.php?fbclid=IwAR3gWa6551RsQNc-wvbc4rpyM31kNX7nXodpiKSi086dnIsooD0YR_iELoo");
+        yield return www.SendWebRequest();
+
+        if (www.isNetworkError || www.isHttpError)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            int kelintas = 1;
+            string uzimtaVieta = www.downloadHandler.text;
+            String[] parse = uzimtaVieta.Split(';');
+          //  Debug.LogWarning(uzimtaVieta);
+            for (int l = 0; l<parse.Length-1; l++)
+            {
+               
+                String[] parse2 = parse[l].Split('|');
+              //  Debug.LogWarning(parse2[1] + " = " + name + " | " + parse2[2] + " = " + score );
+                if (parse2[1].Equals(name) && parse2[2].Equals(score)) teksats.text = "Jus užemat: " + kelintas + " vietą";
+                kelintas++;
+            }
+
+        }
+    }
 
 }

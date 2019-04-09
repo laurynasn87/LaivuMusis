@@ -7,7 +7,7 @@ using System.Linq;
 using System;
 using UnityEngine.UI;
 using UnityEngine.Networking;
-
+//Made By Laurynas Naina
 public class BoardVer1 : MonoBehaviour
 {
     public static List<Laivas> Laivai = new List<Laivas>();
@@ -240,7 +240,7 @@ public class BoardVer1 : MonoBehaviour
     public void Counter(string koordinates)
     {
         string url = Counteris + "koordinates='" + koordinates + "'";
-        Debug.Log(koordinates + url);
+       // Debug.Log(koordinates + url);
         WWW www = new WWW(url);
     }
 
@@ -294,10 +294,12 @@ public class BoardVer1 : MonoBehaviour
             pries.AiShot = true;
             if (pries.lygis.value == 2)
                 shot2lygis(name, x, y);
+            atimtigyvybe(name);
         }
         GameObject kulka = Instantiate(Priesininkas.GetComponent<Priesininkas>().AIbullet, new Vector3(166, 184, 32), Quaternion.Euler(60, -90, 0));
-        if (pries.AiShot) atimtigyvybe(name);
+        
         StartCoroutine(ProjectileMove(kulka.transform.position, board[x, y].transform.position, kulka));
+       
 
     }
     void shot2lygis(String name, int x, int y)
@@ -306,53 +308,75 @@ public class BoardVer1 : MonoBehaviour
 
         if (x - 10 > 10)
         {
-            Debug.LogWarning("I em here " + x + y + "Why not: " + board[x - 10, y].name);
-            if (data.DazniausiaiPataikomi.Contains(board[x - 10, y].name))
+            try
             {
-                Debug.LogWarning("I em 2 " + x + y);
-                int index = data.DazniausiaiPataikomi.IndexOf(board[x - 10, y].name);
-                data.DazniausiaiPataikomi.RemoveAt(index);
-                data.DazniausiaiPataikomi.Insert(1, board[x - 10, y].name);
-            }
+                //   Debug.LogWarning("I em here " + x + y + "Why not: " + board[x - 10, y].name);
+                if (data.DazniausiaiPataikomi.Contains(board[x - 10, y].name))
+                {
 
+                    //      Debug.LogWarning("I em 2 " + x + y);
+                    int index = data.DazniausiaiPataikomi.IndexOf(board[x - 10, y].name);
+                    data.DazniausiaiPataikomi.RemoveAt(index);
+                    data.DazniausiaiPataikomi.Insert(1, board[x - 10, y].name);
+                }
+            }
+            catch
+            { }
         }
         if (x + 10 < 110)
         {
-            if (data.DazniausiaiPataikomi.Contains(board[x + 10, y].name))
+            try
             {
-                int index = data.DazniausiaiPataikomi.IndexOf(board[x + 10, y].name);
-                data.DazniausiaiPataikomi.RemoveAt(index);
-                data.DazniausiaiPataikomi.Insert(1, board[x + 10, y].name);
+                if (data.DazniausiaiPataikomi.Contains(board[x + 10, y].name))
+                {
+                    int index = data.DazniausiaiPataikomi.IndexOf(board[x + 10, y].name);
+                    data.DazniausiaiPataikomi.RemoveAt(index);
+                    data.DazniausiaiPataikomi.Insert(1, board[x + 10, y].name);
+                }
             }
-
+            catch
+            { }
         }
         if (y - 10 > 10)
         {
-            if (data.DazniausiaiPataikomi.Contains(board[x, y - 10].name))
+            try
             {
-                int index = data.DazniausiaiPataikomi.IndexOf(board[x, y - 10].name);
-                data.DazniausiaiPataikomi.RemoveAt(index);
-                data.DazniausiaiPataikomi.Insert(1, board[x, y - 10].name);
-            }
 
+                if (data.DazniausiaiPataikomi.Contains(board[x, y - 10].name))
+                {
+                    int index = data.DazniausiaiPataikomi.IndexOf(board[x, y - 10].name);
+                    data.DazniausiaiPataikomi.RemoveAt(index);
+                    data.DazniausiaiPataikomi.Insert(1, board[x, y - 10].name);
+                }
+            }
+            catch
+            { }
         }
 
         if (y + 10 < 110)
         {
-            if (data.DazniausiaiPataikomi.Contains(board[x, y + 10].name))
+            try
             {
-                int index = data.DazniausiaiPataikomi.IndexOf(board[x, y + 10].name);
-                data.DazniausiaiPataikomi.RemoveAt(index);
-                data.DazniausiaiPataikomi.Insert(1, board[x, y + 10].name);
+                if (data.DazniausiaiPataikomi.Contains(board[x, y + 10].name))
+                {
+                    int index = data.DazniausiaiPataikomi.IndexOf(board[x, y + 10].name);
+                    data.DazniausiaiPataikomi.RemoveAt(index);
+                    data.DazniausiaiPataikomi.Insert(1, board[x, y + 10].name);
+                }
             }
+            catch
+            { }
 
         }
-        data.DazniausiaiPataikomi.ForEach(index => Debug.Log("Visos koordinates: " + index));
     }
+     //   data.DazniausiaiPataikomi.ForEach(index => Debug.Log("Visos koordinates: " + index));
+    
     public void atimtigyvybe(string name)
     {
-        Debug.LogWarning(Laivai.Count+ "Count");
-        if (Laivai.Count == 0) win();
+        int kelinta = -1;
+
+        //  Debug.LogWarning(Laivai2.Count);
+        if (Laivai.Count == 0) loose();
         foreach (Laivas laivelis in Laivai)
         {
             int index = Array.IndexOf(laivelis.Koordinates, name);
@@ -363,11 +387,15 @@ public class BoardVer1 : MonoBehaviour
                 foreach (String kord in laivelis.Koordinates)
                 {
                     GetTileByString(kord).GetComponent<Renderer>().material.color = Color.yellow;
+                    GameObject tiles = GetTileByString(kord);
+                    //Instantiate(explosion, tiles.transform.position, Quaternion.Euler(60, 90, 0));
                 }
-                Laivai.Remove(laivelis);
+                kelinta = Laivai.IndexOf(laivelis);
+                //  Laivai2.Remove(laivelis);
             }
-
         }
+        if (kelinta > -1) Laivai.RemoveAt(kelinta);
+        if (Laivai.Count == 0) loose();
 
 
     }
@@ -377,7 +405,7 @@ public class BoardVer1 : MonoBehaviour
     }
     public void loose()
     {
-        Priesininkas.GetComponent<Priesininkas>().win();
+        Priesininkas.GetComponent<Priesininkas>().loose();
     }
     public bool arpataike(string name)
     {

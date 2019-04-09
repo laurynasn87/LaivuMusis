@@ -89,6 +89,7 @@ public class Background : MonoBehaviour
     }
     public IEnumerator makelist()
     {
+        
     
         //WWW www = new WWW(CounterData);
 
@@ -105,9 +106,16 @@ public class Background : MonoBehaviour
            List<String> parsed =  Parser(uzimtaVieta);
             for (int ix=0; ix<parsed.Count; ix++)
             {
+                
+               
+                reitingai[ix].SetActive(true);
+                if (ix %3==0 || ix == 0)
+                {
+                  
+                    continue;
+                }
                 Text tekstukas = reitingai[ix].GetComponent<Text>();
                 tekstukas.text = parsed[ix];
-                reitingai[ix].SetActive(true);
             }
         }
     }
