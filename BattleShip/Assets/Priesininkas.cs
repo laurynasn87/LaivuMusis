@@ -362,10 +362,9 @@ public class Priesininkas : MonoBehaviour
     {
         wins.SetActive(true);
         WinorLose.text = "Jūs Pralaimėjote";
-        ejimai.text = "";
-        pataikymai.text = "";
-        ejimai.enabled = false;
-        pataikymai.enabled = false;
+        Text[] baiges = wins.GetComponentsInChildren<Text>();
+        baiges[1].text = "";
+        baiges[2].text = "";
     }
     IEnumerator getvieta(string vardas, Text uzimta)
     {
