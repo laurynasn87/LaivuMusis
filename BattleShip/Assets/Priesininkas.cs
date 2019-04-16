@@ -39,11 +39,15 @@ public class Priesininkas : MonoBehaviour
     public GameObject kubas;
     string laimejimas = "https://bastioned-public.000webhostapp.com/Score.php?";
 <<<<<<< HEAD
+<<<<<<< HEAD
     string vieta = "https://bastioned-public.000webhostapp.com/GetUserScore.php?username='";
 =======
     string vieta = "https://bastioned-public.000webhostapp.com/GetUserScore.php?";
 
 >>>>>>> c42b70b1259c66870f1046e5b73f297c35626797
+=======
+    string vieta = "https://bastioned-public.000webhostapp.com/GetUserScore.php?";
+>>>>>>> parent of 85e2963... .
     void Start()
     {
     
@@ -359,23 +363,32 @@ public class Priesininkas : MonoBehaviour
         //
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         string url = laimejimas + "username='" + name + "'&score='" + suvis + "'";
+=======
+        string url = laimejimas + "username='" + name + "'&score" + suvis;
+>>>>>>> parent of 85e2963... .
         Debug.Log(url);
         WWW www = new WWW(url);
 
         Text[] baiges = wins.GetComponentsInChildren<Text>();
         baiges[1].text = "Jums Prireikė: " + ejimai.text + " ėjimų";
         baiges[2].text = "Jums Prireikė: " + pataikymai.text + " šuvių";
+<<<<<<< HEAD
         baiges[3].text = "Jus užemat: " + getvieta(name) + " vietą";
 =======
         StartCoroutine(insert(name, ejimukiekis.ToString()));
  
         
 >>>>>>> c42b70b1259c66870f1046e5b73f297c35626797
+=======
+        baiges[3].text = "Jus užemat: " + getvieta() + " vietą";
+>>>>>>> parent of 85e2963... .
     }
     public void loose()
     {
         wins.SetActive(true);
+<<<<<<< HEAD
 <<<<<<< HEAD
     }
     /*public IEnumerator getvieta(string name)
@@ -387,11 +400,16 @@ public class Priesininkas : MonoBehaviour
     }
     IEnumerator getvieta(string vardas, Text uzimta)
 >>>>>>> c42b70b1259c66870f1046e5b73f297c35626797
+=======
+    }
+    public IEnumerator getvieta()
+>>>>>>> parent of 85e2963... .
     {
         string url = vieta + vardas + "'";
         UnityWebRequest www = UnityWebRequest.Get(url);
         yield return www.SendWebRequest();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         UnityWebRequest www = UnityWebRequest.Get(vieta+name+"'");
 =======
@@ -412,6 +430,9 @@ public class Priesininkas : MonoBehaviour
         string url = laimejimas + "username='" + vardas + "'&score='" + suviu + "'";
         UnityWebRequest www = UnityWebRequest.Get(url);
 >>>>>>> c42b70b1259c66870f1046e5b73f297c35626797
+=======
+        UnityWebRequest www = UnityWebRequest.Get(vieta);
+>>>>>>> parent of 85e2963... .
         yield return www.SendWebRequest();
 
         if (www.isNetworkError || www.isHttpError)
@@ -422,6 +443,7 @@ public class Priesininkas : MonoBehaviour
         {
 <<<<<<< HEAD
             string uzimtaVieta = www.downloadHandler.text;
+<<<<<<< HEAD
             Debug.Log(uzimtaVieta);
             Debug.Log(www);
 =======
@@ -433,27 +455,10 @@ public class Priesininkas : MonoBehaviour
             //  baiges[3].text = "Jus užemat: " + getvieta() + " vietą";
         //    StartCoroutine(getvieta(name, baiges[3]));
 >>>>>>> c42b70b1259c66870f1046e5b73f297c35626797
-        }
-    }*/
-
-    IEnumerator getvieta(string vardas)
-    {
-        string url = vieta + vardas + "'";
-        UnityWebRequest www = UnityWebRequest.Get(url);
-        yield return www.SendWebRequest();
-
-        if (www.isNetworkError || www.isHttpError)
-        {
-            Debug.Log(www.error);
-        }
-        else
-        {
-            Debug.Log(www.downloadHandler.data); // this log is returning the requested data. 
-            string a = www.downloadHandler.text;
-            Debug.Log(www.downloadHandler.text);
+=======
+>>>>>>> parent of 85e2963... .
         }
     }
-
     IEnumerator shotDown(GameObject tile)
     {
 
