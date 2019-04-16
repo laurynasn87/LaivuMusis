@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8422101848500581176}
   - component: {fileID: 8413682692620684608}
   - component: {fileID: 8390279720442136802}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Small Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 8425980140719654712}
   - component: {fileID: 8413927317996943250}
   - component: {fileID: 8394443226701905618}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Medium Cannons
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -195,7 +195,7 @@ GameObject:
   - component: {fileID: 8422121081237358200}
   - component: {fileID: 8413650307426196584}
   - component: {fileID: 8390214754184744664}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Small Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -287,7 +287,7 @@ GameObject:
   - component: {fileID: 8422515955043253660}
   - component: {fileID: 8413581913331631346}
   - component: {fileID: 8394135205816350096}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Medium Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -379,7 +379,7 @@ GameObject:
   - component: {fileID: 8422196362408473420}
   - component: {fileID: 8414294404518666446}
   - component: {fileID: 8390871733779678574}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Minininkas
   m_TagString: Laivai
   m_Icon: {fileID: 0}
@@ -476,7 +476,7 @@ GameObject:
   - component: {fileID: 8422224303520258940}
   - component: {fileID: 8413609747793266286}
   - component: {fileID: 8394046236951227060}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Large Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -565,7 +565,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8401508064307765968}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Weapons
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -602,7 +602,7 @@ GameObject:
   - component: {fileID: 8426099186015034880}
   - component: {fileID: 8414444362617645092}
   - component: {fileID: 8394548058183417354}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Small Cannons
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -693,7 +693,7 @@ GameObject:
   - component: {fileID: 8421877778012957312}
   - component: {fileID: 8414049606240811610}
   - component: {fileID: 8394358657713068108}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Small Cannons
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -784,7 +784,7 @@ GameObject:
   - component: {fileID: 8421855929268461824}
   - component: {fileID: 8413894817998515706}
   - component: {fileID: 8390219554565411502}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Large Cannons
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -879,7 +879,7 @@ GameObject:
   - component: {fileID: 8390320039313089678}
   - component: {fileID: 8390346616400790906}
   - component: {fileID: 8394007128430797266}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}

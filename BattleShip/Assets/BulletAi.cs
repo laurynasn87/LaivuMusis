@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +9,7 @@ public class BulletAi : MonoBehaviour
     void Start()
     {
         script = GameObject.FindGameObjectWithTag("Respawn").GetComponent<Priesininkas>();
-       // Debug.LogWarning("STOP2");
+        Debug.LogWarning("STOP2");
         GameObject[] laivai = GameObject.FindGameObjectsWithTag("Laivai");
         foreach (GameObject laiveliai in laivai)
         {
@@ -39,11 +38,13 @@ public class BulletAi : MonoBehaviour
                 GameObject explosion = script.explosion;
                 Instantiate(script.explosion, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.Euler(60, 90, 0));
                 Instantiate(script.faieaa, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.Euler(60, 90, 0));
-                
+                AudioSource sound = other.gameObject.AddComponent<AudioSource>();
+                sound.clip = klipas;
+                sound.enabled = true;
+                sound.Play();
             }
-            catch (Exception e)
+            catch
             {
-                Debug.LogWarning("Bugas bullet AI " + e);
             }
 
 
@@ -52,8 +53,7 @@ public class BulletAi : MonoBehaviour
         {
             try
             {
-                if (other.gameObject.GetComponent<Renderer>().material.color != Color.yellow)
-                    other.gameObject.GetComponent<Renderer>().material.color = Color.blue;
+                other.gameObject.GetComponent<Renderer>().material.color = Color.blue;
             }
             catch
             {
