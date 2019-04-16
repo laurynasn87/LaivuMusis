@@ -37,7 +37,7 @@ public class Priesininkas : MonoBehaviour
     GameObject wins;
     public GameObject kubas;
     string laimejimas = "https://bastioned-public.000webhostapp.com/Score.php?";
-    string vieta = "https://bastioned-public.000webhostapp.com/GetUserScore.php?";
+    string vieta = "https://bastioned-public.000webhostapp.com/GetUserScore.php?username='";
     void Start()
     {
         Scriptas = MainBoard.gameObject.GetComponent<BoardVer1>();
@@ -343,24 +343,24 @@ public class Priesininkas : MonoBehaviour
         //Cia paduoti i serva kiek suviu prireike i duombaze kaip score ir name
         //
 
-        string url = laimejimas + "username='" + name + "'&score" + suvis;
+        string url = laimejimas + "username='" + name + "'&score='" + suvis + "'";
         Debug.Log(url);
         WWW www = new WWW(url);
 
         Text[] baiges = wins.GetComponentsInChildren<Text>();
         baiges[1].text = "Jums Prireikė: " + ejimai.text + " ėjimų";
         baiges[2].text = "Jums Prireikė: " + pataikymai.text + " šuvių";
-        baiges[3].text = "Jus užemat: " + getvieta() + " vietą";
+        baiges[3].text = "Jus užemat: " + getvieta(name) + " vietą";
     }
     public void loose()
     {
         wins.SetActive(true);
     }
-    public IEnumerator getvieta()
+    /*public IEnumerator getvieta(string name)
     {
         //WWW www = new WWW(CounterData);
 
-        UnityWebRequest www = UnityWebRequest.Get(vieta);
+        UnityWebRequest www = UnityWebRequest.Get(vieta+name+"'");
         yield return www.SendWebRequest();
 
         if (www.isNetworkError || www.isHttpError)
@@ -370,8 +370,29 @@ public class Priesininkas : MonoBehaviour
         else
         {
             string uzimtaVieta = www.downloadHandler.text;
+            Debug.Log(uzimtaVieta);
+            Debug.Log(www);
+        }
+    }*/
+
+    IEnumerator getvieta(string vardas)
+    {
+        string url = vieta + vardas + "'";
+        UnityWebRequest www = UnityWebRequest.Get(url);
+        yield return www.SendWebRequest();
+
+        if (www.isNetworkError || www.isHttpError)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            Debug.Log(www.downloadHandler.data); // this log is returning the requested data. 
+            string a = www.downloadHandler.text;
+            Debug.Log(www.downloadHandler.text);
         }
     }
+
     IEnumerator shotDown(GameObject tile)
     {
 
